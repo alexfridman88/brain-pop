@@ -13,7 +13,7 @@ class LoginTest extends TestCase
     {
         $student = Student::factory()->create();
 
-        $this->postJson($this->endpoint, [
+        $this->postJson('api/students/login', [
             'username' => $student->username,
             'password' => '123456',
         ])->assertStatus(200);

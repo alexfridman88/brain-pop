@@ -9,17 +9,18 @@ use Illuminate\Http\Resources\Json\JsonResource;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
- * Base Controller
+ * Class CrudControllerAbstract
  *
- * This class implements basic CRUD operations for a given model and its associated resource.
+ * This abstract class provides basic CRUD functionalities for a controller that manages a specific model.
  */
 abstract class CrudControllerAbstract extends Controller
 {
 
+
     /**
-     * Get the resource mapping for the model.
+     * Get the controller mapping.
      *
-     * @return array{model: Model, resource: JsonResource} The resource mapping array.
+     * @return array The array representing the controller mapping.
      */
     abstract protected function controllerMapping(): array;
 
