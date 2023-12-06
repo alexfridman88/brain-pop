@@ -2,64 +2,58 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\LoginRequest;
+use App\Http\Requests\Teacher\TeacherStoreRequest;
+use App\Http\Requests\Teacher\TeacherUpdateRequest;
+use App\Http\Resources\LoginResource;
+use App\Http\Resources\TeacherResource;
 use App\Models\Teacher;
-use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Auth;
+use Symfony\Component\HttpFoundation\Response;
 
-class TeacherController extends Controller
+class TeacherController extends CrudControllerAbstract
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        //
-    }
 
     /**
-     * Show the form for creating a new resource.
+     * Retrieves the resource mapping for the given method.
+     *
+     * @return array The resource mapping array containing the 'model' and 'resource' keys.
      */
-    public function create()
+    protected function controllerMapping(): array
     {
-        //
+        return [
+            'model' => Teacher::class,
+            'resource' => TeacherResource::class,
+        ];
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function store(TeacherStoreRequest $request): JsonResponse
     {
-        //
+        return $this->storeInstance($request->validated());
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Teacher $teacher)
+    public function show(Teacher $teacher): JsonResponse
     {
-        //
+        return $this->showInstance($teacher);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Teacher $teacher)
+    public function update(TeacherUpdateRequest $request, Teacher $teacher): JsonResponse
     {
-        //
+        return $this->updateInstance($request->validated(), $teacher);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Teacher $teacher)
+    public function login(LoginRequest $request): JsonResponse
     {
-        //
-    }
+        if (Auth::guard('teachers')->attempt($request->validated())) {
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Teacher $teacher)
-    {
-        //
+            /* @var Teacher $teacher */
+            $teacher = Auth::guard('teachers')->user();
+            $teacher->createToken('authToken');
+
+            return response()->json(new LoginResource($teacher));
+        }
+
+        return response()->json('Login failed', Response::HTTP_FORBIDDEN);
     }
 }

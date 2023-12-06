@@ -2,64 +2,58 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\LoginRequest;
+use App\Http\Requests\Student\StudentStoreRequest;
+use App\Http\Requests\Student\StudentUpdateRequest;
+use App\Http\Resources\LoginResource;
+use App\Http\Resources\StudentResource;
 use App\Models\Student;
-use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Auth;
+use Services\LoginService;
+use Symfony\Component\HttpFoundation\Response;
 
-class StudentController extends Controller
+class StudentController extends CrudControllerAbstract
 {
     /**
-     * Display a listing of the resource.
+     * Retrieves the resource mapping for the given method.
+     *
+     * @return array The resource mapping array containing the 'model' and 'resource' keys.
      */
-    public function index()
+    protected function controllerMapping(): array
     {
-        //
+        return [
+            'model' => Student::class,
+            'resource' => StudentResource::class,
+        ];
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function show(Student $student): JsonResponse
     {
-        //
+        return $this->showInstance($student);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function store(StudentStoreRequest $request): JsonResponse
     {
-        //
+        return $this->storeInstance($request->validated());
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Student $student)
+    public function update(StudentUpdateRequest $request, Student $student): JsonResponse
     {
-        //
+        return $this->updateInstance($request->validated(), $student);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Student $student)
+    public function login(LoginRequest $request): JsonResponse
     {
-        //
-    }
+        if (Auth::guard('students')->attempt($request->validated())) {
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Student $student)
-    {
-        //
-    }
+            /* @var Student $student */
+            $student = Auth::guard('students')->user();
+            $student->createToken('authToken');
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Student $student)
-    {
-        //
+            return response()->json(new LoginResource($student));
+        }
+
+        return response()->json('Login failed', Response::HTTP_FORBIDDEN);
     }
 }

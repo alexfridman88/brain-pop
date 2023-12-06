@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('username')->unique();
             $table->string('password');
             $table->string('full_name');
-            $table->string('grade');
+            $table->integer('grade');
             $table->timestamps();
         });
     }
