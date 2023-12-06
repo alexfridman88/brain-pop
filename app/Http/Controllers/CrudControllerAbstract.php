@@ -16,7 +16,6 @@ use Symfony\Component\HttpFoundation\Response;
 abstract class CrudControllerAbstract extends Controller
 {
 
-
     /**
      * Get the controller mapping.
      *
@@ -112,7 +111,6 @@ abstract class CrudControllerAbstract extends Controller
             return response()->json($exception, Response::HTTP_BAD_REQUEST);
         }
     }
-
 
     /**
      * Get the model to be used for storing an instance.

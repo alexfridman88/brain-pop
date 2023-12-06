@@ -10,7 +10,6 @@ use App\Http\Resources\StudentResource;
 use App\Models\Student;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
-use Services\LoginService;
 use Symfony\Component\HttpFoundation\Response;
 
 class StudentController extends CrudControllerAbstract

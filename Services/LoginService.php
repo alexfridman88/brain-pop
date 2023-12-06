@@ -1,6 +1,6 @@
 <?php
 
-namespace Services;
+namespace App\Services;
 
 use App\Http\Resources\LoginResource;
 use App\Models\Student;
