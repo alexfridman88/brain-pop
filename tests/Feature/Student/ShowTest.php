@@ -13,12 +13,19 @@ class ShowTest extends TestCase
 
     public function test_show(): void
     {
+        /** @var Student $student */
         $student = Student::factory()->create();
 
         Sanctum::actingAs($student);
 
         $this->getJson($this->endPoint . '/' . $student->id)
-            ->assertOk();
+            ->assertOk()
+            ->assertJson([
+                'id' => $student->id,
+                'username' => $student->username,
+                'full_name' => $student->full_name,
+                'grade' => $student->grade
+            ]);
     }
 
     public function test_403(): void

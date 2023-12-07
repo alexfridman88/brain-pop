@@ -3,6 +3,7 @@
 namespace Tests\Feature\Teacher;
 
 use App\Models\Teacher;
+use Illuminate\Testing\Fluent\AssertableJson;
 use Tests\TestCase;
 
 class LoginTest extends TestCase
@@ -17,7 +18,8 @@ class LoginTest extends TestCase
         $this->postJson($this->endpoint, [
             'username' => $teacher->username,
             'password' => '123456',
-        ])->assertOk();
+        ])->assertOk()
+            ->assertJson(fn(AssertableJson $json) => $json->hasAll(['full_name', 'token']));
     }
 
     public function test_login_403(): void

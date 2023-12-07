@@ -18,7 +18,13 @@ class ShowTest extends TestCase
         Sanctum::actingAs($teacher);
 
         $this->getJson($this->endPoint . '/' . $teacher->id)
-            ->assertOk();
+            ->assertOk()
+            ->assertJson([
+                'id' => $teacher->id,
+                'full_name' => $teacher->full_name,
+                'username' => $teacher->username,
+                'email' => $teacher->email
+            ]);
     }
 
     public function test_403(): void
