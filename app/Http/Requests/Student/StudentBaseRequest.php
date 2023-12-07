@@ -6,10 +6,9 @@ trait StudentBaseRequest
 {
     private function baseRequest(): array
     {
-        return
-            [
-                'full_name' => ['required', 'string'],
-                'grade' => ['int', 'required', 'between:0,12']
-            ];
+        return [
+            'full_name' => ['required', 'string'],
+            'grade' => ['int', 'required', 'between:0,12']
+        ];
     }
 }

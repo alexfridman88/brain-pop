@@ -18,7 +18,7 @@ class UpdateTest extends TestCase
             ->assertOk();
     }
 
-    public function test_update_403(): void
+    public function test_update_forbidden(): void
     {
         $model = Teacher::factory()->create();
         Sanctum::actingAs($model);

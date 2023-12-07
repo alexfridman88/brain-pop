@@ -24,15 +24,11 @@ class AuthServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        Gate::define('delete-entity', function ($user, Student|Teacher $entity) {
-            return basename($user) === basename($entity) && $user->id === $entity->id;
-        });
-
-        Gate::define('update-entity', function ($user, Student|Teacher $entity) {
+        Gate::define('action-entity', function ($user, Student|Teacher $entity) {
             return class_basename($user) === class_basename($entity) && $user->id === $entity->id;
         });
 
-        Gate::define('store-period', function ($user) {
+        Gate::define('teacher', function ($user) {
             return $user instanceof Teacher;
         });
 
@@ -43,6 +39,7 @@ class AuthServiceProvider extends ServiceProvider
         Gate::define('delete-period', function ($user, Period $period) {
             return $this->updateOrDeletePeriod($user, $period);
         });
+
     }
 
     /**

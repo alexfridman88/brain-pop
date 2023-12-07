@@ -6,6 +6,8 @@ use App\Http\Requests\LoginRequest;
 use App\Http\Requests\Teacher\TeacherStoreRequest;
 use App\Http\Requests\Teacher\TeacherUpdateRequest;
 use App\Http\Resources\TeacherResource;
+use App\Models\Period;
+use App\Models\Student;
 use App\Models\Teacher;
 use App\Traits\LoginTrait;
 use Exception;
@@ -19,17 +21,21 @@ class TeacherController extends CrudControllerAbstract
 
     use LoginTrait;
 
-    /**
-     * Retrieves the resource mapping for the given method.
-     *
-     * @return array The resource mapping array containing the 'model' and 'resource' keys.
-     */
     protected function controllerMapping(): array
     {
         return [
             'model' => Teacher::class,
             'resource' => TeacherResource::class,
         ];
+    }
+
+    public function index(): JsonResponse
+    {
+        try {
+            return $this->indexInstance();
+        } catch (Exception $exception) {
+            return response()->json($exception, Response::HTTP_BAD_REQUEST);
+        }
     }
 
     public function store(TeacherStoreRequest $request): JsonResponse
@@ -53,7 +59,7 @@ class TeacherController extends CrudControllerAbstract
     public function update(TeacherUpdateRequest $request, Teacher $teacher): JsonResponse
     {
         try {
-            $this->authorize('update-entity', $teacher);
+            $this->authorize('action-entity', $teacher);
             return $this->updateInstance($request->validated(), $teacher);
         } catch (AuthorizationException $exception) {
             return response()->json($exception, Response::HTTP_FORBIDDEN);
@@ -65,7 +71,7 @@ class TeacherController extends CrudControllerAbstract
     public function destroy(Teacher $teacher): JsonResponse
     {
         try {
-            $this->authorize('destroy-entity', $teacher);
+            $this->authorize('action-entity', $teacher);
             return $this->destroyInstance($teacher);
         } catch (AuthorizationException $exception) {
             return response()->json($exception, Response::HTTP_FORBIDDEN);
@@ -78,4 +84,5 @@ class TeacherController extends CrudControllerAbstract
     {
         return $this->loginBy('teacher', $request->validated());
     }
+
 }

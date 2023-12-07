@@ -6,7 +6,6 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class StudentUpdateRequest extends FormRequest
 {
-
     use StudentBaseRequest;
 
     public function authorize(): bool

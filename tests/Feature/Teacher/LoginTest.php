@@ -22,7 +22,7 @@ class LoginTest extends TestCase
             ->assertJson(fn(AssertableJson $json) => $json->hasAll(['full_name', 'token']));
     }
 
-    public function test_login_403(): void
+    public function test_login_forbidden(): void
     {
         $teacher = Teacher::factory()->create();
 

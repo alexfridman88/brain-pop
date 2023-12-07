@@ -13,7 +13,6 @@ class StudentStoreRequest extends FormRequest
         return true;
     }
 
-
     public function rules(): array
     {
         return $this->baseRequest() + [

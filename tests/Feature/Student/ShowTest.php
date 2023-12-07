@@ -28,7 +28,7 @@ class ShowTest extends TestCase
             ]);
     }
 
-    public function test_403(): void
+    public function test_show_unauthorized(): void
     {
         $student = Student::factory()->create();
 

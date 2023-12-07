@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\Period\PeriodRequest;
+use App\Http\Requests\StudentListRequest;
 use App\Http\Resources\PeriodResource;
 use App\Models\Period;
 use App\Models\Teacher;
@@ -14,17 +15,22 @@ use Symfony\Component\HttpFoundation\Response;
 
 class PeriodController extends CrudControllerAbstract
 {
-    /**
-     * Retrieves the resource mapping for the given method.
-     *
-     * @return array The resource mapping array containing the 'model' and 'resource' keys.
-     */
+
     protected function controllerMapping(): array
     {
         return [
             'model' => Period::class,
             'resource' => PeriodResource::class
         ];
+    }
+
+    public function index(): JsonResponse
+    {
+        try {
+            return $this->indexInstance();
+        } catch (Exception $exception) {
+            return response()->json($exception, Response::HTTP_BAD_REQUEST);
+        }
     }
 
     /**
@@ -34,7 +40,7 @@ class PeriodController extends CrudControllerAbstract
     public function store(PeriodRequest $request): JsonResponse
     {
         try {
-            $this->authorize('store-period');
+            $this->authorize('teacher');
 
             /** @var Teacher $teacher */
             $teacher = Auth::user();
@@ -81,6 +87,31 @@ class PeriodController extends CrudControllerAbstract
             return $this->destroyInstance($period);
         } catch (AuthorizationException $exception) {
             return response()->json($exception, Response::HTTP_FORBIDDEN);
+        } catch (Exception $exception) {
+            return response()->json($exception, Response::HTTP_BAD_REQUEST);
+        }
+    }
+
+    public function byTeacher(Teacher $teacher): JsonResponse
+    {
+        return response()->json(PeriodResource::collection($teacher->periods));
+    }
+
+    public function attachStudents(Period $period, StudentListRequest $request): JsonResponse
+    {
+        try {
+            $period->students()->sync(collect($request->validated())->pluck('id'));
+            return response()->json(['message' => 'success'], Response::HTTP_OK);
+        } catch (Exception $exception) {
+            return response()->json($exception, Response::HTTP_BAD_REQUEST);
+        }
+    }
+
+    public function detachStudents(Period $period, StudentListRequest $request): JsonResponse
+    {
+        try {
+            $period->students()->detach(collect($request->validated())->pluck('id'));
+            return response()->json(['message' => 'success'], Response::HTTP_OK);
         } catch (Exception $exception) {
             return response()->json($exception, Response::HTTP_BAD_REQUEST);
         }

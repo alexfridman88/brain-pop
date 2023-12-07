@@ -13,8 +13,13 @@ Route::post('students/login', [StudentController::class, 'login']);
 Route::post('teachers/login', [TeacherController::class, 'login']);
 
 Route::middleware('auth:sanctum')->group(function () {
-    Route::resource('students', StudentController::class)->except('store');
-    Route::resource('teachers', TeacherController::class)->except('store');
-
+    Route::resource('students', StudentController::class)->except(['store']);
+    Route::resource('teachers', TeacherController::class)->except(['store']);
     Route::resource('periods', PeriodController::class);
+
+    Route::get('periods/teacher/{teacher}', [PeriodController::class, 'byTeacher']);
+    Route::get('students/teacher/{teacher}', [StudentController::class, 'byTeacher']);
+
+    Route::post('periods/attach/{period}', [PeriodController::class, 'attachStudents']);
+    Route::post('periods/detach/{period}', [PeriodController::class, 'detachStudents']);
 });

@@ -20,7 +20,7 @@ class DestroyTest extends TestCase
             ->assertOk();
     }
 
-    public function test_destroy_403(): void
+    public function test_destroy_forbidden(): void
     {
         $student1 = Student::factory()->create();
         $student2 = Student::factory()->create();

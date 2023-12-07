@@ -18,7 +18,7 @@ class StoreTest extends TestCase
             ->assertCreated();
     }
 
-    public function test_store_422(): void
+    public function test_store_unprocessable(): void
     {
         $model = Student::factory()->make(
             ['username' => null]

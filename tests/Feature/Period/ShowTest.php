@@ -25,10 +25,13 @@ class ShowTest extends TestCase
 
     public function test_show_students(): void
     {
-        $student = Student::factory()->create();
-        $period = Period::factory()->create(['teacher_id' => $student->id]);
+        $teacher = Teacher::factory()->create();
+        $period = Period::factory()->create(['teacher_id' => $teacher->id]);
 
-        Sanctum::actingAs($student);
+        $students = Student::factory()->createMany(10);
+        $period->students()->sync($students->pluck('id'));
+
+        Sanctum::actingAs($teacher);
 
         $this->getJson($this->endPoint .'/'. $period->id)
             ->assertOk();
@@ -36,8 +39,8 @@ class ShowTest extends TestCase
 
     public function test_show_unauthorized(): void
     {
-        $student = Student::factory()->create();
-        $period = Period::factory()->create(['teacher_id' => $student->id]);
+        $teacher = Teacher::factory()->create();
+        $period = Period::factory()->create(['teacher_id' => $teacher->id]);
 
 
         $this->getJson($this->endPoint .'/'. $period->id)

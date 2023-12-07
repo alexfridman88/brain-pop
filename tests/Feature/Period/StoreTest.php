@@ -22,7 +22,7 @@ class StoreTest extends TestCase
             ->assertCreated();
     }
 
-    public function test_store_403(): void
+    public function test_store_forbidden(): void
     {
         $student = Student::factory()->make();
         Sanctum::actingAs($student);
