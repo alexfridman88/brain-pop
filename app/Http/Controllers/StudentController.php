@@ -5,15 +5,14 @@ namespace App\Http\Controllers;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\Student\StudentStoreRequest;
 use App\Http\Requests\Student\StudentUpdateRequest;
-use App\Http\Resources\LoginResource;
 use App\Http\Resources\StudentResource;
 use App\Models\Student;
+use App\Traits\LoginTrait;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Auth;
-use Symfony\Component\HttpFoundation\Response;
 
 class StudentController extends CrudControllerAbstract
 {
+    use LoginTrait;
     /**
      * Retrieves the resource mapping for the given method.
      *
@@ -42,17 +41,13 @@ class StudentController extends CrudControllerAbstract
         return $this->updateInstance($request->validated(), $student);
     }
 
+    public function destroy(Student $student): JsonResponse
+    {
+        return $this->destroyInstance($student);
+    }
+
     public function login(LoginRequest $request): JsonResponse
     {
-        if (Auth::guard('students')->attempt($request->validated())) {
-
-            /* @var Student $student */
-            $student = Auth::guard('students')->user();
-            $student->createToken('authToken');
-
-            return response()->json(new LoginResource($student));
-        }
-
-        return response()->json('Login failed', Response::HTTP_FORBIDDEN);
+        return $this->loginBy('student', $request->validated());
     }
 }

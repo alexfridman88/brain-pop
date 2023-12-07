@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use Exception;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Gate;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -96,17 +98,23 @@ abstract class CrudControllerAbstract extends Controller
         }
     }
 
+
     /**
      * Destroy an instance of the model.
      *
-     * @param Model $model The model instance to destroy.
-     * @return JsonResponse The JSON response containing the result.
+     * @param Model $model The instance to destroy.
+     * @return JsonResponse The JSON response indicating the result of the deletion.
+     *                      A success message will be returned if the deletion was successful.
+     *                      An error message will be returned if the deletion was unsuccessful.
      */
-    public function destroy(Model $model): JsonResponse
+    public function destroyInstance(Model $model): JsonResponse
     {
         try {
+            Gate::authorize('delete', $model);
             $model->delete();
             return response()->json(['message' => 'success'], Response::HTTP_OK);
+        } catch (AuthorizationException $exception) {
+            return response()->json($exception, Response::HTTP_FORBIDDEN);
         } catch (Exception $exception) {
             return response()->json($exception, Response::HTTP_BAD_REQUEST);
         }

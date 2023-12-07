@@ -1,36 +1,30 @@
 <?php
 
-namespace App\Services;
+namespace App\Traits;
 
 use App\Http\Resources\LoginResource;
 use App\Models\Student;
 use App\Models\Teacher;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\Response;
 
-class LoginService
+trait LoginTrait
 {
-    public function student($credentials): JsonResponse
-    {
-        return $this->login('students', $credentials);
-    }
 
-    public function teacher($credentials): JsonResponse
+    private function loginBy(string $entity, array $credentials): JsonResponse
     {
-        return $this->login('teachers', $credentials);
 
-    }
+        $guard = Str::plural($entity);
 
-    private function login(string $guard, array $credentials): JsonResponse
-    {
         if (Auth::guard($guard)->attempt($credentials)) {
 
             /* @var Student|Teacher $student */
             $entity = Auth::guard($guard)->user();
             $entity->createToken('authToken');
 
-            return response()->json(new LoginResource($student));
+            return response()->json(new LoginResource($entity));
         }
 
         return response()->json('Login failed', Response::HTTP_FORBIDDEN);
