@@ -8,11 +8,15 @@ use App\Http\Requests\Student\StudentUpdateRequest;
 use App\Http\Resources\StudentResource;
 use App\Models\Student;
 use App\Traits\LoginTrait;
+use Exception;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\JsonResponse;
+use Symfony\Component\HttpFoundation\Response;
 
 class StudentController extends CrudControllerAbstract
 {
     use LoginTrait;
+
     /**
      * Retrieves the resource mapping for the given method.
      *
@@ -28,22 +32,44 @@ class StudentController extends CrudControllerAbstract
 
     public function show(Student $student): JsonResponse
     {
-        return $this->showInstance($student);
+        try {
+            return $this->showInstance($student);
+        } catch (Exception $exception) {
+            return response()->json($exception, Response::HTTP_BAD_REQUEST);
+        }
     }
 
     public function store(StudentStoreRequest $request): JsonResponse
     {
-        return $this->storeInstance($request->validated());
+        try {
+            return $this->storeInstance($request->validated());
+        } catch (Exception $exception) {
+            return response()->json($exception, Response::HTTP_BAD_REQUEST);
+        }
     }
 
     public function update(StudentUpdateRequest $request, Student $student): JsonResponse
     {
-        return $this->updateInstance($request->validated(), $student);
+        try {
+            $this->authorize('update-entity', $student);
+            return $this->updateInstance($request->validated(), $student);
+        } catch (AuthorizationException $exception) {
+            return response()->json($exception, Response::HTTP_FORBIDDEN);
+        } catch (Exception $exception) {
+            return response()->json($exception, Response::HTTP_BAD_REQUEST);
+        }
     }
 
     public function destroy(Student $student): JsonResponse
     {
-        return $this->destroyInstance($student);
+        try {
+            $this->authorize('destroy-entity', $student);
+            return $this->destroyInstance($student);
+        } catch (AuthorizationException $exception) {
+            return response()->json($exception, Response::HTTP_FORBIDDEN);
+        } catch (Exception $exception) {
+            return response()->json($exception, Response::HTTP_BAD_REQUEST);
+        }
     }
 
     public function login(LoginRequest $request): JsonResponse

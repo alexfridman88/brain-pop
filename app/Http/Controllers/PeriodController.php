@@ -2,64 +2,88 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Period\PeriodRequest;
+use App\Http\Resources\PeriodResource;
 use App\Models\Period;
-use Illuminate\Http\Request;
+use App\Models\Teacher;
+use Exception;
+use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Auth;
+use Symfony\Component\HttpFoundation\Response;
 
-class PeriodController extends Controller
+class PeriodController extends CrudControllerAbstract
 {
     /**
-     * Display a listing of the resource.
+     * Retrieves the resource mapping for the given method.
+     *
+     * @return array The resource mapping array containing the 'model' and 'resource' keys.
      */
-    public function index()
+    protected function controllerMapping(): array
     {
-        //
+        return [
+            'model' => Period::class,
+            'resource' => PeriodResource::class
+        ];
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Store a new period in the database.
+     * Only Teachers cant create a new period
      */
-    public function create()
+    public function store(PeriodRequest $request): JsonResponse
     {
-        //
+        try {
+            $this->authorize('store-period');
+
+            /** @var Teacher $teacher */
+            $teacher = Auth::user();
+            $period = $teacher->periods()->save(new Period($request->validated()));
+            return response()->json($period, Response::HTTP_CREATED);
+        } catch (AuthorizationException $exception) {
+            return response()->json($exception, Response::HTTP_FORBIDDEN);
+        } catch (Exception $exception) {
+            return response()->json($exception, Response::HTTP_BAD_REQUEST);
+        }
+    }
+
+    public function show(Period $period): JsonResponse
+    {
+        try {
+            return $this->showInstance($period);
+        } catch (Exception $exception) {
+            return response()->json($exception, Response::HTTP_BAD_REQUEST);
+        }
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Only creator (teacher) can update period
      */
-    public function store(Request $request)
+    public function update(PeriodRequest $request, Period $period): JsonResponse
     {
-        //
+        try {
+            $this->authorize('update-period', $period);
+            return $this->updateInstance($request->validated(), $period);
+        } catch (AuthorizationException $exception) {
+            return response()->json($exception, Response::HTTP_FORBIDDEN);
+        } catch (Exception $exception) {
+            return response()->json($exception, Response::HTTP_BAD_REQUEST);
+        }
     }
 
     /**
-     * Display the specified resource.
+     * Ony creator (teacher) can remove period
      */
-    public function show(Period $period)
+    public function destroy(Period $period): JsonResponse
     {
-        //
+        try {
+            $this->authorize('delete-period', $period);
+            return $this->destroyInstance($period);
+        } catch (AuthorizationException $exception) {
+            return response()->json($exception, Response::HTTP_FORBIDDEN);
+        } catch (Exception $exception) {
+            return response()->json($exception, Response::HTTP_BAD_REQUEST);
+        }
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Period $period)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Period $period)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Period $period)
-    {
-        //
-    }
 }

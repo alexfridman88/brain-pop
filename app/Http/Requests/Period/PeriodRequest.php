@@ -1,13 +1,11 @@
 <?php
 
-namespace App\Http\Requests\Student;
+namespace App\Http\Requests\Period;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class StudentUpdateRequest extends FormRequest
+class PeriodRequest extends FormRequest
 {
-
-    use StudentBaseRequest;
 
     public function authorize(): bool
     {
@@ -16,6 +14,8 @@ class StudentUpdateRequest extends FormRequest
 
     public function rules(): array
     {
-        return $this->baseRequest();
+        return [
+            'name' => ['required', 'string']
+        ];
     }
 }

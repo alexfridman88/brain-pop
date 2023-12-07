@@ -18,10 +18,11 @@ use Symfony\Component\HttpFoundation\Response;
 abstract class CrudControllerAbstract extends Controller
 {
 
+
     /**
-     * Get the controller mapping.
+     * Get the mapping of controller methods.
      *
-     * @return array The array representing the controller mapping.
+     * @return array{model:Model, resource:JsonResponse} The mapping of controller methods.
      */
     abstract protected function controllerMapping(): array;
 
@@ -55,11 +56,7 @@ abstract class CrudControllerAbstract extends Controller
      */
     public function showInstance(Model $model): JsonResponse
     {
-        try {
-            return response()->json(new ($this->getResource())($model));
-        } catch (Exception $exception) {
-            return response()->json($exception, Response::HTTP_BAD_REQUEST);
-        }
+        return response()->json(new ($this->getResource())($model));
     }
 
     /**
@@ -70,14 +67,10 @@ abstract class CrudControllerAbstract extends Controller
      */
     public function storeInstance(array $data): JsonResponse
     {
-        try {
-            $model = $this->getModel();
-            $item = new $model($data);
-            $item->save();
-            return response()->json($item, Response::HTTP_CREATED);
-        } catch (Exception $exception) {
-            return response()->json($exception, Response::HTTP_BAD_REQUEST);
-        }
+        $model = $this->getModel();
+        $item = new $model($data);
+        $item->save();
+        return response()->json($item, Response::HTTP_CREATED);
     }
 
     /**
@@ -89,13 +82,9 @@ abstract class CrudControllerAbstract extends Controller
      */
     public function updateInstance(array $data, Model $model): JsonResponse
     {
-        try {
-            $model->fill($data);
-            $model->save();
-            return response()->json(['message' => 'success'], Response::HTTP_OK);
-        } catch (Exception $exception) {
-            return response()->json($exception, Response::HTTP_BAD_REQUEST);
-        }
+        $model->fill($data);
+        $model->save();
+        return response()->json(['message' => 'success'], Response::HTTP_OK);
     }
 
 
@@ -109,15 +98,8 @@ abstract class CrudControllerAbstract extends Controller
      */
     public function destroyInstance(Model $model): JsonResponse
     {
-        try {
-            Gate::authorize('delete', $model);
-            $model->delete();
-            return response()->json(['message' => 'success'], Response::HTTP_OK);
-        } catch (AuthorizationException $exception) {
-            return response()->json($exception, Response::HTTP_FORBIDDEN);
-        } catch (Exception $exception) {
-            return response()->json($exception, Response::HTTP_BAD_REQUEST);
-        }
+        $model->delete();
+        return response()->json(['message' => 'success'], Response::HTTP_OK);
     }
 
     /**

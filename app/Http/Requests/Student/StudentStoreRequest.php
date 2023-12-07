@@ -6,6 +6,7 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class StudentStoreRequest extends FormRequest
 {
+    use StudentBaseRequest;
 
     public function authorize(): bool
     {
@@ -15,11 +16,9 @@ class StudentStoreRequest extends FormRequest
 
     public function rules(): array
     {
-        return [
+        return $this->baseRequest() + [
             'username' => ['required', 'string'],
             'password' => ['required', 'string', 'min:6'],
-            'full_name' => ['required', 'string'],
-            'grade' => ['int', 'required', 'between:0,12']
         ];
     }
 }
