@@ -6,12 +6,10 @@ use App\Models\Student;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Gate;
 
-class StudentListRequest extends FormRequest
+class StudentAttachmentRequest extends FormRequest
 {
     /**
-     * Authorizes the action based on the specified criteria.
-     *
-     * @return bool Returns a boolean indicating whether the action is authorized or not.
+     * Only Teacher can add a students or Student can add itself to period
      */
     public function authorize(): bool
     {
@@ -24,8 +22,8 @@ class StudentListRequest extends FormRequest
     public function rules(): array
     {
         return [
-            '*.id' => ['integer'],
-            '*.grade' => ['integer', 'between:0,12']
+            '*.id' => ['required', 'integer'],
+            '*.grade' => ['required', 'integer', 'between:0,12']
         ];
     }
 }

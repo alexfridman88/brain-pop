@@ -23,6 +23,17 @@ class IndexTest extends TestCase
             ->assertOk();
     }
 
+    public function test_index_by_teacher(): void
+    {
+        $teacher = Teacher::factory()->create();
+        Period::factory()->count(10)->create(['teacher_id' => $teacher->id]);
+
+        Sanctum::actingAs($teacher);
+
+        $this->json('GET', $this->endPoint, ['teacher_id' => $teacher->id])
+            ->assertOk();
+    }
+
 
     public function test_index_unauthorized(): void
     {

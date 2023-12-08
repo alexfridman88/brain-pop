@@ -41,7 +41,7 @@ class TeacherController extends RepositoryAbstract
         try {
             return $this->indexInstance();
         } catch (Exception $exception) {
-            return response()->json($exception, Response::HTTP_BAD_REQUEST);
+            return $this->responseError($exception);
         }
     }
 
@@ -59,7 +59,7 @@ class TeacherController extends RepositoryAbstract
         try {
             return $this->storeInstance($request->validated());
         } catch (Exception $exception) {
-            return response()->json($exception, Response::HTTP_BAD_REQUEST);
+            return $this->responseError($exception);
         }
     }
 
@@ -77,7 +77,7 @@ class TeacherController extends RepositoryAbstract
         try {
             return $this->showInstance($teacher);
         } catch (Exception $exception) {
-            return response()->json($exception, Response::HTTP_BAD_REQUEST);
+            return $this->responseError($exception);
         }
     }
 
@@ -96,7 +96,7 @@ class TeacherController extends RepositoryAbstract
         try {
             return $this->updateInstance($request->validated(), $teacher);
         } catch (Exception $exception) {
-            return response()->json($exception, Response::HTTP_BAD_REQUEST);
+            return $this->responseError($exception);
         }
     }
 
@@ -115,9 +115,9 @@ class TeacherController extends RepositoryAbstract
             $this->authorize('action-entity', $teacher);
             return $this->destroyInstance($teacher);
         } catch (AuthorizationException $exception) {
-            return response()->json($exception, Response::HTTP_FORBIDDEN);
+            return $this->responseForbidden($exception);
         } catch (Exception $exception) {
-            return response()->json($exception, Response::HTTP_BAD_REQUEST);
+            return $this->responseError($exception);
         }
     }
 

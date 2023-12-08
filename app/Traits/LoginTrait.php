@@ -31,7 +31,7 @@ trait LoginTrait
             $entity = Auth::guard($guard)->user();
             $entity->createToken('authToken');
 
-            return response()->json(new LoginResource($entity));
+            return response()->json(new LoginResource($entity), Response::HTTP_OK);
         }
 
         return response()->json('Login failed', Response::HTTP_FORBIDDEN);

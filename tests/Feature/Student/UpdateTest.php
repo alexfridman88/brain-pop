@@ -14,6 +14,7 @@ class UpdateTest extends TestCase
     {
         $model = Student::factory()->create();
         Sanctum::actingAs($model);
+
         $this->putJson($this->endPoint . '/' . $model->id, $model->getAttributes())
             ->assertOk();
     }

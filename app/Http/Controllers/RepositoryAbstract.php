@@ -54,7 +54,7 @@ abstract class RepositoryAbstract extends Controller implements RepositoryInterf
 
         /** @var JsonResource $resource */
         $resource = $this->getResource();
-        return response()->json($resource::collection($model::query()->get()));
+        return $this->responseJson($resource::collection($model::query()->get()));
     }
 
     /**
@@ -65,21 +65,22 @@ abstract class RepositoryAbstract extends Controller implements RepositoryInterf
      */
     public function showInstance(Model $model): JsonResponse
     {
-        return response()->json(new ($this->getResource())($model));
+        return $this->responseJson(new ($this->getResource())($model));
     }
 
+
     /**
-     * Store an instance of the model in the database.
+     * Store an instance of a model with the given data.
      *
-     * @param array $data The data to be stored in the instance.
-     * @return JsonResponse The JSON response containing the stored instance.
+     * @param array $data The data to be stored for the model instance.
+     * @return JsonResponse The JSON response with the success message and HTTP status code.
      */
     public function storeInstance(array $data): JsonResponse
     {
         $model = $this->getModel();
         $item = new $model($data);
         $item->save();
-        return response()->json($item, Response::HTTP_CREATED);
+        return $this->responseOk('success', Response::HTTP_CREATED);
     }
 
     /**
@@ -92,7 +93,7 @@ abstract class RepositoryAbstract extends Controller implements RepositoryInterf
     public function updateInstance(array $data, Model $model): JsonResponse
     {
         $model->update($data);
-        return response()->json(['message' => 'success'], Response::HTTP_OK);
+        return $this->responseOk();
     }
 
     /**
@@ -104,7 +105,7 @@ abstract class RepositoryAbstract extends Controller implements RepositoryInterf
     public function destroyInstance(Model $model): JsonResponse
     {
         $model->delete();
-        return response()->json(['message' => 'success'], Response::HTTP_OK);
+        return $this->responseOk();
     }
 
 }

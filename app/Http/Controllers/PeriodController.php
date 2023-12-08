@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\Period\PeriodIndexRequest;
-use App\Http\Requests\Period\PeriodStoreRequest;
-use App\Http\Requests\StudentListRequest;
+use App\Http\Requests\Period\PeriodBaseRequest;
+use App\Http\Requests\StudentAttachmentRequest;
 use App\Http\Resources\PeriodResource;
 use App\Models\Period;
 use App\Models\Teacher;
@@ -40,9 +40,9 @@ class PeriodController extends RepositoryAbstract
     {
         try {
             $periods = Period::filterByTeacher($request->get('teacher_id'))->get();
-            return response()->json(PeriodResource::collection($periods));
+            return $this->responseJson(PeriodResource::collection($periods));
         } catch (Exception $exception) {
-            return response()->json($exception, Response::HTTP_BAD_REQUEST);
+            return $this->responseError($exception);
         }
     }
 
@@ -50,18 +50,18 @@ class PeriodController extends RepositoryAbstract
      * Store a new period.
      * Only authorized 'teachers' can create a period.
      *
-     * @param PeriodStoreRequest $request The request object containing the period data.
+     * @param PeriodBaseRequest $request The request object containing the period data.
      * @return JsonResponse The JSON response containing the stored period data or the error message and status code.
      */
-    public function store(PeriodStoreRequest $request): JsonResponse
+    public function store(PeriodBaseRequest $request): JsonResponse
     {
         try {
             /** @var Teacher $teacher */
             $teacher = Auth::user();
-            $period = $teacher->periods()->save(new Period($request->validated()));
-            return response()->json($period, Response::HTTP_CREATED);
+            $teacher->periods()->save(new Period($request->validated()));
+            return $this->responseOk('success', Response::HTTP_CREATED);
         } catch (Exception $exception) {
-            return response()->json($exception, Response::HTTP_BAD_REQUEST);
+            return $this->responseError($exception);
         }
     }
 
@@ -77,30 +77,30 @@ class PeriodController extends RepositoryAbstract
         try {
             return $this->showInstance($period);
         } catch (Exception $exception) {
-            return response()->json($exception, Response::HTTP_BAD_REQUEST);
+            return $this->responseError($exception);
         }
     }
 
     /**
      * Update an existing period in the database.
-     * Only authorized users with the 'update-period' can update a period.
+     * Only authorized users with the 'actions-period' can update a period.
      *
-     * @param PeriodStoreRequest $request The request object containing the validated data.
+     * @param PeriodBaseRequest $request The request object containing the validated data.
      * @param Period $period The period instance to be updated.
      * @return JsonResponse The JSON response indicating the success or failure of the update operation.
      */
-    public function update(PeriodStoreRequest $request, Period $period): JsonResponse
+    public function update(PeriodBaseRequest $request, Period $period): JsonResponse
     {
         try {
             return $this->updateInstance($request->validated(), $period);
         } catch (Exception $exception) {
-            return response()->json($exception, Response::HTTP_BAD_REQUEST);
+            return $this->responseError($exception);
         }
     }
 
     /**
      * Delete a period from the database.
-     * Only authorized users with the 'delete-period' permission can delete a period.
+     * Only authorized users with the 'actions-period' permission can delete a period.
      *
      * @param Period $period The period to be deleted.
      *
@@ -109,12 +109,12 @@ class PeriodController extends RepositoryAbstract
     public function destroy(Period $period): JsonResponse
     {
         try {
-            $this->authorize('delete-period', $period);
+            $this->authorize('actions-period', $period);
             return $this->destroyInstance($period);
         } catch (AuthorizationException $exception) {
-            return response()->json($exception, Response::HTTP_FORBIDDEN);
+            return $this->responseForbidden($exception);
         } catch (Exception $exception) {
-            return response()->json($exception, Response::HTTP_BAD_REQUEST);
+            return $this->responseError($exception);
         }
     }
 
@@ -122,16 +122,16 @@ class PeriodController extends RepositoryAbstract
      * Attach students to a period.
      *
      * @param Period $period The period to attach students to
-     * @param StudentListRequest $request The request containing the student list
+     * @param StudentAttachmentRequest $request The request containing the student list
      * @return JsonResponse The JSON response indicating success or failure
      */
-    public function attachStudents(Period $period, StudentListRequest $request): JsonResponse
+    public function attachStudents(Period $period, StudentAttachmentRequest $request): JsonResponse
     {
         try {
             $period->students()->sync(collect($request->validated())->pluck('id'));
-            return response()->json(['message' => 'success'], Response::HTTP_OK);
+            return $this->responseOk();
         } catch (Exception $exception) {
-            return response()->json($exception, Response::HTTP_BAD_REQUEST);
+            return $this->responseError($exception);
         }
     }
 
@@ -139,16 +139,16 @@ class PeriodController extends RepositoryAbstract
      * Detach students from a period.
      *
      * @param Period $period The period from which to detach students.
-     * @param StudentListRequest $request The request containing the list of students to detach.
+     * @param StudentAttachmentRequest $request The request containing the list of students to detach.
      * @return JsonResponse The JSON response with a success message or an error message on failure.
      */
-    public function detachStudents(Period $period, StudentListRequest $request): JsonResponse
+    public function detachStudents(Period $period, StudentAttachmentRequest $request): JsonResponse
     {
         try {
             $period->students()->detach(collect($request->validated())->pluck('id'));
-            return response()->json(['message' => 'success'], Response::HTTP_OK);
+            return $this->responseOk();
         } catch (Exception $exception) {
-            return response()->json($exception, Response::HTTP_BAD_REQUEST);
+            return $this->responseError($exception);
         }
     }
 

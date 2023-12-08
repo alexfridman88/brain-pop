@@ -2,9 +2,7 @@
 
 namespace App\Http\Requests\Period;
 
-use App\Models\Period;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Facades\Gate;
 
 class PeriodIndexRequest extends FormRequest
 {

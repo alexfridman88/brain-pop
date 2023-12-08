@@ -11,7 +11,7 @@ use Tests\TestCase;
 class AttachStudentToPeriodTest extends TestCase
 {
 
-    private string $endPoint = 'api/periods/attach';
+    private string $endPoint = 'api/periods';
 
     public function test_attach_one_student_by_teacher(): void
     {
@@ -21,7 +21,7 @@ class AttachStudentToPeriodTest extends TestCase
 
         Sanctum::actingAs($teacher);
 
-        $this->postJson($this->endPoint .'/'. $period->id, [$student->id])
+        $this->postJson($this->endPoint . '/' . $period->id . '/attach', [$student])
             ->assertOk();
     }
 
@@ -33,7 +33,7 @@ class AttachStudentToPeriodTest extends TestCase
 
         Sanctum::actingAs($teacher);
 
-        $this->postJson($this->endPoint .'/'. $period->id, $students)
+        $this->postJson($this->endPoint . '/' . $period->id . '/attach', $students)
             ->assertOk();
     }
 
@@ -45,7 +45,7 @@ class AttachStudentToPeriodTest extends TestCase
 
         Sanctum::actingAs($student);
 
-        $this->postJson($this->endPoint .'/'. $period->id, [$student])
+        $this->postJson($this->endPoint . '/' . $period->id . '/attach', [$student])
             ->assertOk();
     }
 
@@ -58,7 +58,7 @@ class AttachStudentToPeriodTest extends TestCase
 
         Sanctum::actingAs($student);
 
-        $this->postJson($this->endPoint .'/'. $period->id, $students->toArray())
+        $this->postJson($this->endPoint . '/' . $period->id . '/attach', $students->toArray())
             ->assertForbidden();
     }
 
@@ -71,7 +71,7 @@ class AttachStudentToPeriodTest extends TestCase
 
         Sanctum::actingAs($student);
 
-        $this->postJson($this->endPoint .'/'. $period->id, [$student2])
+        $this->postJson($this->endPoint . '/' . $period->id . '/attach', [$student2])
             ->assertForbidden();
     }
 
@@ -81,7 +81,7 @@ class AttachStudentToPeriodTest extends TestCase
         $period = Period::factory()->create(['teacher_id' => $teacher->id]);
         $student = Student::factory()->create();
 
-        $this->postJson($this->endPoint .'/'. $period->id, [$student->id])
+        $this->postJson($this->endPoint . '/' . $period->id . '/attach', [$student->id])
             ->assertUnauthorized();
     }
 

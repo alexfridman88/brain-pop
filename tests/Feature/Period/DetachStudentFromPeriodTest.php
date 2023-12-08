@@ -11,7 +11,7 @@ use Tests\TestCase;
 class DetachStudentFromPeriodTest extends TestCase
 {
 
-    private string $endPoint = 'api/periods/detach';
+    private string $endPoint = 'api/periods';
 
     public function test_detach_one_student_by_teacher(): void
     {
@@ -23,7 +23,7 @@ class DetachStudentFromPeriodTest extends TestCase
 
         $period->students()->attach([$student->id]);
 
-        $this->postJson($this->endPoint .'/'. $period->id, [$student])
+        $this->postJson($this->endPoint . '/' . $period->id . '/detach', [$student])
             ->assertOk();
     }
 
@@ -37,7 +37,7 @@ class DetachStudentFromPeriodTest extends TestCase
 
         $period->students()->attach($students->pluck('id'));
 
-        $this->postJson($this->endPoint .'/'. $period->id, $students->toArray())
+        $this->postJson($this->endPoint . '/' . $period->id . '/detach', $students->toArray())
             ->assertOk();
     }
 
@@ -51,7 +51,7 @@ class DetachStudentFromPeriodTest extends TestCase
 
         $period->students()->attach([$student->id]);
 
-        $this->postJson($this->endPoint .'/'. $period->id, [$student])
+        $this->postJson($this->endPoint . '/' . $period->id . '/detach', [$student])
             ->assertOk();
     }
 
@@ -66,7 +66,7 @@ class DetachStudentFromPeriodTest extends TestCase
 
         $period->students()->attach($students->pluck('id'));
 
-        $this->postJson($this->endPoint .'/'. $period->id, $students->toArray())
+        $this->postJson($this->endPoint . '/' . $period->id . '/detach', $students->toArray())
             ->assertForbidden();
     }
 
@@ -81,7 +81,7 @@ class DetachStudentFromPeriodTest extends TestCase
 
         $period->students()->attach([$student2->id]);
 
-        $this->postJson($this->endPoint .'/'. $period->id, [$student2])
+        $this->postJson($this->endPoint . '/' . $period->id . '/detach', [$student2])
             ->assertForbidden();
     }
 
@@ -93,7 +93,7 @@ class DetachStudentFromPeriodTest extends TestCase
 
         $period->students()->attach([$student->id]);
 
-        $this->postJson($this->endPoint .'/'. $period->id, [$student])
+        $this->postJson($this->endPoint . '/' . $period->id . '/detach', [$student])
             ->assertUnauthorized();
     }
 

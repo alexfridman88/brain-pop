@@ -13,12 +13,11 @@ class TeacherStoreRequest extends FormRequest
         return true;
     }
 
-
     public function rules(): array
     {
         return $this->baseRequest() + [
-            'username'  => 'required|string',
-            'password'  => 'required|string|min:6',
-        ];
+                'username' => ['required', 'string'],
+                'password' => ['required', 'string', 'min:6'],
+            ];
     }
 }

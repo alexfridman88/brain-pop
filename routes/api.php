@@ -18,6 +18,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::resource('teachers', TeacherController::class)->except(['store']);
     Route::resource('periods', PeriodController::class);
 
-    Route::post('periods/attach/{period}', [PeriodController::class, 'attachStudents']);
-    Route::post('periods/detach/{period}', [PeriodController::class, 'detachStudents']);
+    Route::post('periods/{period}/attach', [PeriodController::class, 'attachStudents']);
+    Route::post('periods/{period}/detach', [PeriodController::class, 'detachStudents']);
 });

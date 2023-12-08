@@ -12,7 +12,6 @@ use App\Traits\LoginTrait;
 use Exception;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\JsonResponse;
-use Symfony\Component\HttpFoundation\Response;
 
 class StudentController extends RepositoryAbstract
 {
@@ -44,9 +43,9 @@ class StudentController extends RepositoryAbstract
             $students = Student::filterByTeacher($request->get('teacher_id'))
                 ->filterByPeriod($request->get('period_id'))
                 ->get();
-            return response()->json(StudentResource::collection($students));
+            return $this->responseJson(StudentResource::collection($students));
         } catch (Exception $exception) {
-            return response()->json($exception, Response::HTTP_BAD_REQUEST);
+            return $this->responseError($exception);
         }
     }
 
@@ -62,7 +61,7 @@ class StudentController extends RepositoryAbstract
         try {
             return $this->showInstance($student);
         } catch (Exception $exception) {
-            return response()->json($exception, Response::HTTP_BAD_REQUEST);
+            return $this->responseError($exception);
         }
     }
 
@@ -80,7 +79,7 @@ class StudentController extends RepositoryAbstract
         try {
             return $this->storeInstance($request->validated());
         } catch (Exception $exception) {
-            return response()->json($exception, Response::HTTP_BAD_REQUEST);
+            return $this->responseError($exception);
         }
     }
 
@@ -100,7 +99,7 @@ class StudentController extends RepositoryAbstract
         try {
             return $this->updateInstance($request->validated(), $student);
         } catch (Exception $exception) {
-            return response()->json($exception, Response::HTTP_BAD_REQUEST);
+            return $this->responseError($exception);
         }
     }
 
@@ -119,9 +118,9 @@ class StudentController extends RepositoryAbstract
             $this->authorize('action-entity', $student);
             return $this->destroyInstance($student);
         } catch (AuthorizationException $exception) {
-            return response()->json($exception, Response::HTTP_FORBIDDEN);
+            return $this->responseForbidden($exception);
         } catch (Exception $exception) {
-            return response()->json($exception, Response::HTTP_BAD_REQUEST);
+            return $this->responseError($exception);
         }
     }
 

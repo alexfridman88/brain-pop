@@ -20,35 +20,27 @@ class AuthServiceProvider extends ServiceProvider
     ];
 
     /**
-     * Register any authentication / authorization services.
+     * Defines the gates for various actions and permissions.
+     *
+     * @return void
      */
     public function boot(): void
     {
-        Gate::define('action-entity', function ($user, Student|Teacher $entity) {
-            return class_basename($user) === class_basename($entity) && $user->id === $entity->id;
-        });
+        Gate::define('action-entity', fn($user, $entity) => class_basename($user) === class_basename($entity) && $user->id === $entity->id);
 
-        Gate::define('teacher', function ($user) {
-            return $user instanceof Teacher;
-        });
+        /**
+         * Check if Auth entity is Teacher
+         */
+        Gate::define('teacher', fn($user) => $user instanceof Teacher);
 
-        Gate::define('update-period', function ($user, Period $period) {
-            return $this->updateOrDeletePeriod($user, $period);
-        });
 
-        Gate::define('delete-period', function ($user, Period $period) {
-            return $this->updateOrDeletePeriod($user, $period);
-        });
+        Gate::define('abc', fn($user) => true);
+
+        /**
+         * Check if Auth entity is Teacher and have permission for update period
+         */
+        Gate::define('actions-period', fn($user, Period $period) => $user instanceof Teacher && $user->id === $period->teacher_id);
 
     }
 
-    /**
-     * @param $user
-     * @param Period $period
-     * @return bool
-     */
-    function updateOrDeletePeriod($user, Period $period): bool
-    {
-        return $user instanceof Teacher && $user->id === $period->teacher_id;
-    }
 }
