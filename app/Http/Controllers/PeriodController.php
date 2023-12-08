@@ -49,6 +49,7 @@ class PeriodController extends RepositoryAbstract
     /**
      * Store a new period.
      * Only authorized 'teachers' can create a period.
+     * New period instance is created and associated with the authorized teacher.
      *
      * @param PeriodBaseRequest $request The request object containing the period data.
      * @return JsonResponse The JSON response containing the stored period data or the error message and status code.
@@ -83,7 +84,8 @@ class PeriodController extends RepositoryAbstract
 
     /**
      * Update an existing period in the database.
-     * Only authorized users with the 'actions-period' can update a period.
+     * Only authorized users with the 'actions-period' permission
+     * (associated teacher) can update a period.
      *
      * @param PeriodBaseRequest $request The request object containing the validated data.
      * @param Period $period The period instance to be updated.
@@ -100,7 +102,8 @@ class PeriodController extends RepositoryAbstract
 
     /**
      * Delete a period from the database.
-     * Only authorized users with the 'actions-period' permission can delete a period.
+     * Only authorized users with the 'actions-period' permission
+     * (associated teacher) can delete a period.
      *
      * @param Period $period The period to be deleted.
      *

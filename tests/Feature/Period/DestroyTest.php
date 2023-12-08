@@ -11,6 +11,11 @@ class DestroyTest extends TestCase
 {
     private string $endPoint = 'api/periods';
 
+    /**
+     * Test the destroy period method.
+     *
+     * @return void
+     */
     public function test_destroy(): void
     {
         $teacher = Teacher::factory()->create();
@@ -22,6 +27,11 @@ class DestroyTest extends TestCase
             ->assertOk();
     }
 
+    /**
+     * Test the destroy period forbidden method.
+     *
+     * @return void
+     */
     public function test_destroy_forbidden(): void
     {
         $teacher = Teacher::factory()->create();

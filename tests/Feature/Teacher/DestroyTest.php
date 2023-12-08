@@ -10,6 +10,11 @@ class DestroyTest extends TestCase
 {
     private string $endPoint = 'api/teachers';
 
+    /**
+     * Method to test the destroy functionality of the teacher endpoint.
+     *
+     * @return void
+     */
     public function test_destroy(): void
     {
         $teacher = Teacher::factory()->create();
@@ -20,6 +25,11 @@ class DestroyTest extends TestCase
             ->assertOk();
     }
 
+    /**
+     * Method to test the destroy functionality of the teacher endpoint when the request is forbidden.
+     *
+     * @return void
+     */
     public function test_destroy_forbidden(): void
     {
         $teacher1 = Teacher::factory()->create();

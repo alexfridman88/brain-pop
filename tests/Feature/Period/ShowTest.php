@@ -12,7 +12,13 @@ class ShowTest extends TestCase
 {
     private string $endPoint = 'api/periods';
 
-    public function test_show_teachers(): void
+
+    /**
+     * Test the "show period as teacher" functionality.
+     *
+     * @return void
+     */
+    public function test_show_period_as_teacher(): void
     {
         $teacher = Teacher::factory()->create();
         $period = Period::factory()->create(['teacher_id' => $teacher->id]);
@@ -23,25 +29,32 @@ class ShowTest extends TestCase
             ->assertOk();
     }
 
-    public function test_show_students(): void
+    /**
+     * Test the "show period as student" functionality.
+     *
+     * @return void
+     */
+    public function test_show_period_as_student(): void
     {
         $teacher = Teacher::factory()->create();
         $period = Period::factory()->create(['teacher_id' => $teacher->id]);
+        $student = Student::factory()->create();
 
-        $students = Student::factory()->createMany(10);
-        $period->students()->sync($students->pluck('id'));
-
-        Sanctum::actingAs($teacher);
+        Sanctum::actingAs($student);
 
         $this->getJson($this->endPoint .'/'. $period->id)
             ->assertOk();
     }
 
+    /**
+     * Test the "show unauthorized" functionality.
+     *
+     * @return void
+     */
     public function test_show_unauthorized(): void
     {
         $teacher = Teacher::factory()->create();
         $period = Period::factory()->create(['teacher_id' => $teacher->id]);
-
 
         $this->getJson($this->endPoint .'/'. $period->id)
             ->assertUnauthorized();

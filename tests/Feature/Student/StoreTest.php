@@ -10,6 +10,11 @@ class StoreTest extends TestCase
 
     private string $endPoint = 'api/students';
 
+    /**
+     * Test the "store" method.
+     *
+     * @return void
+     */
     public function test_store(): void
     {
         $model = Student::factory()->make();
@@ -18,6 +23,11 @@ class StoreTest extends TestCase
             ->assertCreated();
     }
 
+    /**
+     * Test the store method when the request is unprocessable.
+     *
+     * @return void
+     */
     public function test_store_unprocessable(): void
     {
         $model = Student::factory()->make(

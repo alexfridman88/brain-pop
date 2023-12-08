@@ -12,6 +12,11 @@ class IndexTest extends TestCase
 {
     private string $endPoint = 'api/students';
 
+    /**
+     * Test the index method.
+     *
+     * @return void
+     */
     public function test_index(): void
     {
         $teacher = Teacher::factory()->create();
@@ -26,6 +31,11 @@ class IndexTest extends TestCase
     }
 
 
+    /**
+     * Test the index method by teacher filter.
+     *
+     * @return void
+     */
     public function test_index_by_teacher(): void
     {
         $teacher = Teacher::factory()->create();
@@ -39,6 +49,11 @@ class IndexTest extends TestCase
             ->assertOk();
     }
 
+    /**
+     * Test the index method by period filter.
+     *
+     * @return void
+     */
     public function test_index_by_period(): void
     {
         $teacher = Teacher::factory()->create();
@@ -52,6 +67,11 @@ class IndexTest extends TestCase
             ->assertOk();
     }
 
+    /**
+     * Test the index method by period and teacher filter.
+     *
+     * @return void
+     */
     public function test_index_by_period_and_teacher(): void
     {
         $teacher = Teacher::factory()->create();
@@ -68,6 +88,11 @@ class IndexTest extends TestCase
             ->assertOk();
     }
 
+    /**
+     * Test the index method for unauthorized access.
+     *
+     * @return void
+     */
     public function test_index_unauthorized(): void
     {
         $teacher = Teacher::factory()->create();

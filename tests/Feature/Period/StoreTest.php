@@ -12,6 +12,11 @@ class StoreTest extends TestCase
 {
     private string $endPoint = 'api/periods';
 
+    /**
+     * Test the store method of the class.
+     *
+     * @return void
+     */
     public function test_store(): void
     {
         $teacher = Teacher::factory()->create();
@@ -22,6 +27,11 @@ class StoreTest extends TestCase
             ->assertCreated();
     }
 
+    /**
+     * Test the store method of the class when forbidden.
+     *
+     * @return void
+     */
     public function test_store_forbidden(): void
     {
         $student = Student::factory()->make();

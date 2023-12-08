@@ -11,6 +11,11 @@ class ShowTest extends TestCase
 
     private string $endPoint = 'api/teachers';
 
+    /**
+     * Test the show method.
+     *
+     * @return void
+     */
     public function test_show(): void
     {
         $teacher = Teacher::factory()->create();
@@ -27,6 +32,11 @@ class ShowTest extends TestCase
             ]);
     }
 
+    /**
+     * Test the show unauthorized method.
+     *
+     * @return void
+     */
     public function test_show_unauthorized(): void
     {
         $teacher = Teacher::factory()->create();

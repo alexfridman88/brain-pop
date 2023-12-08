@@ -33,7 +33,7 @@ class Controller extends BaseController
     }
 
     /**
-     * Success response
+     * Success Json response
      *
      * @param Collection|AnonymousResourceCollection|JsonResource $data
      * @param int $code

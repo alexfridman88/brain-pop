@@ -24,9 +24,10 @@ use Laravel\Sanctum\HasApiTokens;
  */
 class Student extends Authenticatable
 {
+    use HasApiTokens, HasFactory, Notifiable;
+
     protected $fillable = ['username', 'full_name', 'grade', 'password'];
 
-    use HasApiTokens, HasFactory, Notifiable;
 
     protected $hidden = [
         'password'
@@ -41,7 +42,14 @@ class Student extends Authenticatable
         return $this->belongsToMany(Period::class);
     }
 
-
+    /**
+     * Filters the query by the specified teacher.
+     *
+     * @param Builder $query The query builder instance.
+     * @param int|null $teacherId The ID of the teacher to filter by.
+     *
+     * @return Builder The updated query builder instance.
+     */
     public function scopeFilterByTeacher(Builder $query, int|null $teacherId): Builder
     {
         return $query->when($teacherId, fn($students) => $students
@@ -49,6 +57,13 @@ class Student extends Authenticatable
             ->with('periods'));
     }
 
+    /**
+     * Filters the query by a specific period.
+     *
+     * @param Builder $query The query builder instance.
+     * @param int|null $periodId The ID of the period to filter by, or null to not filter.
+     * @return Builder The modified query builder instance.
+     */
     public function scopeFilterByPeriod(Builder $query, int|null $periodId): Builder
     {
         return $query->when($periodId, fn($students) => $students

@@ -12,6 +12,11 @@ class IndexTest extends TestCase
 
     private string $endPoint = 'api/periods';
 
+    /**
+     * Test the index method
+     *
+     * @return void
+     */
     public function test_index(): void
     {
         $teacher = Teacher::factory()->create();
@@ -23,6 +28,11 @@ class IndexTest extends TestCase
             ->assertOk();
     }
 
+    /**
+     * Test the index method by teacher.
+     *
+     * @return void
+     */
     public function test_index_by_teacher(): void
     {
         $teacher = Teacher::factory()->create();
@@ -35,6 +45,11 @@ class IndexTest extends TestCase
     }
 
 
+    /**
+     * Test the index method when the user is unauthorized.
+     *
+     * @return void
+     */
     public function test_index_unauthorized(): void
     {
         $teacher = Teacher::factory()->create();

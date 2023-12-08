@@ -21,7 +21,7 @@ class Teacher extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
 
-    protected $fillable = ['username', 'full_name', 'password', 'email', 'teacher_id'];
+    protected $fillable = ['username', 'full_name', 'password', 'email'];
 
     protected $hidden = [
         'password'

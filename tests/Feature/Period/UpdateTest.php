@@ -12,6 +12,11 @@ class UpdateTest extends TestCase
 
     private string $endPoint = 'api/periods';
 
+    /**
+     * Test the update method.
+     *
+     * @return void
+     */
     public function test_update(): void
     {
         $teacher = Teacher::factory()->create();
@@ -23,6 +28,11 @@ class UpdateTest extends TestCase
             ->assertOk();
     }
 
+    /**
+     * Test the update method when it is forbidden.
+     *
+     * @return void
+     */
     public function test_update_forbidden(): void
     {
         $teacher = Teacher::factory()->create();

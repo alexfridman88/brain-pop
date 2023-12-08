@@ -11,6 +11,11 @@ class LoginTest extends TestCase
 
     private string $endpoint = 'api/teachers/login';
 
+    /**
+     * Test the login functionality.
+     *
+     * @return void
+     */
     public function test_login(): void
     {
         $teacher = Teacher::factory()->create();
@@ -22,6 +27,11 @@ class LoginTest extends TestCase
             ->assertJson(fn(AssertableJson $json) => $json->hasAll(['full_name', 'token']));
     }
 
+    /**
+     * Test the forbidden login functionality.
+     *
+     * @return void
+     */
     public function test_login_forbidden(): void
     {
         $teacher = Teacher::factory()->create();

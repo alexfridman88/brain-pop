@@ -35,6 +35,13 @@ class Period extends Model
         return $this->belongsToMany(Student::class);
     }
 
+    /**
+     * Filters the query by a specific teacher.
+     *
+     * @param Builder $query The query builder instance.
+     * @param int|null $teacherId The ID of the teacher to filter by. If null, no filtering will be applied.
+     * @return Builder The modified query builder instance.
+     */
     public function scopeFilterByTeacher(Builder $query, int|null $teacherId): Builder
     {
         return $query->when($teacherId, fn($periods) => $periods

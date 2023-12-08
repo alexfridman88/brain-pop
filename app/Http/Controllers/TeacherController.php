@@ -11,7 +11,6 @@ use App\Traits\LoginTrait;
 use Exception;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\JsonResponse;
-use Symfony\Component\HttpFoundation\Response;
 
 class TeacherController extends RepositoryAbstract
 {
@@ -83,6 +82,7 @@ class TeacherController extends RepositoryAbstract
 
     /**
      * Update an existing teacher instance.
+     * Associated teacher can only update their own accounts
      *
      * @param TeacherUpdateRequest $request The validated request object.
      * @param Teacher $teacher The teacher object to be updated.
@@ -102,6 +102,7 @@ class TeacherController extends RepositoryAbstract
 
     /**
      * Destroy a teacher instance.
+     * Associated teacher can only update their own accounts
      *
      * @param Teacher $teacher The teacher instance to destroy.
      *
@@ -122,7 +123,7 @@ class TeacherController extends RepositoryAbstract
     }
 
     /**
-     * Authenticate a teacher and log them in.
+     * Authenticate a teacher.
      *
      * @param LoginRequest $request The request object containing the validated login data.
      *

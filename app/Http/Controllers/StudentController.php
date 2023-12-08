@@ -49,12 +49,15 @@ class StudentController extends RepositoryAbstract
         }
     }
 
+
     /**
-     * Retrieve a JSON response for a student.
+     * Show the details of a student record.
      *
-     * @param Student $student The student to retrieve the response for.
+     * @param Student $student The student record to show the details for.
      *
-     * @return JsonResponse The JSON response containing the student information.
+     * @return JsonResponse The response containing the details of the student record.
+     *
+     * @throws Exception If an error occurs while retrieving the student record.
      */
     public function show(Student $student): JsonResponse
     {
@@ -83,9 +86,9 @@ class StudentController extends RepositoryAbstract
         }
     }
 
-
     /**
      * Update an existing student record in the database.
+     * Associated students can only update their own accounts
      *
      * @param StudentUpdateRequest $request The request object containing the validated data.
      * @param Student $student The student record to be updated.
@@ -105,6 +108,7 @@ class StudentController extends RepositoryAbstract
 
     /**
      * Delete a student record from the database.
+     * Associated students can only delete their own accounts
      *
      * @param Student $student The student object to be deleted.
      *
@@ -125,7 +129,7 @@ class StudentController extends RepositoryAbstract
     }
 
     /**
-     * Authenticate a student and log them in.
+     * Authenticate a student.
      *
      * @param LoginRequest $request The request object containing the validated login data.
      *

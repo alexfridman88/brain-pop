@@ -10,6 +10,11 @@ class DestroyTest extends TestCase
 {
     private string $endPoint = 'api/students';
 
+    /**
+     * Test the "destroy" method.
+     *
+     * @return void
+     */
     public function test_destroy(): void
     {
         $student = Student::factory()->create();
@@ -20,6 +25,11 @@ class DestroyTest extends TestCase
             ->assertOk();
     }
 
+    /**
+     * Test the destroy method when forbidden.
+     *
+     * @return void
+     */
     public function test_destroy_forbidden(): void
     {
         $student1 = Student::factory()->create();

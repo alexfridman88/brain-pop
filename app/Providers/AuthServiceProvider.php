@@ -3,10 +3,9 @@
 namespace App\Providers;
 
 use App\Models\Period;
-use App\Models\Student;
 use App\Models\Teacher;
-use Illuminate\Support\Facades\Gate;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
+use Illuminate\Support\Facades\Gate;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -20,21 +19,20 @@ class AuthServiceProvider extends ServiceProvider
     ];
 
     /**
-     * Defines the gates for various actions and permissions.
-     *
-     * @return void
+     * Boot method is used to define access control rules using Laravel Gate.
      */
     public function boot(): void
     {
+
+        /**
+         * Checks if the authenticated user and specified entity have the same class name and the same id.
+         */
         Gate::define('action-entity', fn($user, $entity) => class_basename($user) === class_basename($entity) && $user->id === $entity->id);
 
         /**
          * Check if Auth entity is Teacher
          */
         Gate::define('teacher', fn($user) => $user instanceof Teacher);
-
-
-        Gate::define('abc', fn($user) => true);
 
         /**
          * Check if Auth entity is Teacher and have permission for update period

@@ -10,6 +10,11 @@ class UpdateTest extends TestCase
 {
     private string $endPoint = 'api/teachers';
 
+    /**
+     * Test the update method.
+     *
+     * @return void
+     */
     public function test_update(): void
     {
         $model = Teacher::factory()->create();
@@ -18,6 +23,11 @@ class UpdateTest extends TestCase
             ->assertOk();
     }
 
+    /**
+     * Test the update method when the user is forbidden from updating another teacher's data.
+     *
+     * @return void
+     */
     public function test_update_forbidden(): void
     {
         $model = Teacher::factory()->create();

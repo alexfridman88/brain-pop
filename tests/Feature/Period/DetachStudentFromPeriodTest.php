@@ -13,6 +13,11 @@ class DetachStudentFromPeriodTest extends TestCase
 
     private string $endPoint = 'api/periods';
 
+    /**
+     * Test detaching one student from a period by a teacher.
+     *
+     * @return void
+     */
     public function test_detach_one_student_by_teacher(): void
     {
         $teacher = Teacher::factory()->create();
@@ -27,6 +32,11 @@ class DetachStudentFromPeriodTest extends TestCase
             ->assertOk();
     }
 
+    /**
+     * This method tests the functionality of detaching multiple students from a teacher's period.
+     *
+     * @return void
+     */
     public function test_detach_many_students_by_teacher(): void
     {
         $teacher = Teacher::factory()->create();
@@ -41,6 +51,11 @@ class DetachStudentFromPeriodTest extends TestCase
             ->assertOk();
     }
 
+    /**
+     * This method tests the functionality of detaching a student from their own period.
+     *
+     * @return void
+     */
     public function test_detach_student_is_self(): void
     {
         $teacher = Teacher::factory()->create();
@@ -55,6 +70,14 @@ class DetachStudentFromPeriodTest extends TestCase
             ->assertOk();
     }
 
+    /**
+     * Test detach many students by student forbidden.
+     *
+     * This method is used to test the scenario where a student tries to detach multiple students from a period,
+     * but is forbidden to do so.
+     *
+     * @return void
+     */
     public function test_detach_many_students_by_student_forbidden(): void
     {
         $teacher = Teacher::factory()->create();
@@ -70,6 +93,14 @@ class DetachStudentFromPeriodTest extends TestCase
             ->assertForbidden();
     }
 
+    /**
+     * Test detach one student by another student forbidden.
+     *
+     * This method is used to test the scenario where a student tries to detach another student from a period,
+     * but is forbidden to do so.
+     *
+     * @return void
+     */
     public function test_detach_one_student_by_another_student_forbidden(): void
     {
         $teacher = Teacher::factory()->create();
@@ -85,6 +116,14 @@ class DetachStudentFromPeriodTest extends TestCase
             ->assertForbidden();
     }
 
+    /**
+     * Test detach one student unauthorized.
+     *
+     * This method is used to test the scenario where a user tries to detach a single student from a period,
+     * but is unauthorized to do so.
+     *
+     * @return void
+     */
     public function test_detach_one_student_unauthorized(): void
     {
         $teacher = Teacher::factory()->create();
