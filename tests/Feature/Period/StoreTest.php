@@ -14,7 +14,7 @@ class StoreTest extends TestCase
 
     public function test_store(): void
     {
-        $teacher = Teacher::factory()->make();
+        $teacher = Teacher::factory()->create();
         Sanctum::actingAs($teacher);
         $period = Period::factory()->make();
 

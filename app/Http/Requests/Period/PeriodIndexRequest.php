@@ -2,9 +2,11 @@
 
 namespace App\Http\Requests\Period;
 
+use App\Models\Period;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Gate;
 
-class PeriodRequest extends FormRequest
+class PeriodIndexRequest extends FormRequest
 {
 
     public function authorize(): bool
@@ -15,7 +17,7 @@ class PeriodRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['required', 'string']
+            'teacher_id' => ['sometimes', 'numeric']
         ];
     }
 }

@@ -8,17 +8,21 @@ use App\Http\Requests\Student\StudentStoreRequest;
 use App\Http\Requests\Student\StudentUpdateRequest;
 use App\Http\Resources\StudentResource;
 use App\Models\Student;
-use App\Models\Teacher;
 use App\Traits\LoginTrait;
 use Exception;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 
-class StudentController extends CrudControllerAbstract
+class StudentController extends RepositoryAbstract
 {
     use LoginTrait;
 
+    /**
+     * Set the controller mapping.
+     *
+     * @return array The array containing the model class and resource class.
+     */
     protected function controllerMapping(): array
     {
         return [
@@ -27,15 +31,32 @@ class StudentController extends CrudControllerAbstract
         ];
     }
 
-    public function index(): JsonResponse
+    /**
+     * Get all students or filtering students by params.
+     *
+     * @param StudentIndexRequest $request The request object containing the filtering parameters.
+     *
+     * @return JsonResponse Returns a JSON response containing the list of students.
+     */
+    public function index(StudentIndexRequest $request): JsonResponse
     {
         try {
-            return $this->indexInstance();
+            $students = Student::filterByTeacher($request->get('teacher_id'))
+                ->filterByPeriod($request->get('period_id'))
+                ->get();
+            return response()->json(StudentResource::collection($students));
         } catch (Exception $exception) {
             return response()->json($exception, Response::HTTP_BAD_REQUEST);
         }
     }
 
+    /**
+     * Retrieve a JSON response for a student.
+     *
+     * @param Student $student The student to retrieve the response for.
+     *
+     * @return JsonResponse The JSON response containing the student information.
+     */
     public function show(Student $student): JsonResponse
     {
         try {
@@ -45,6 +66,15 @@ class StudentController extends CrudControllerAbstract
         }
     }
 
+    /**
+     * Store a new student record in the database.
+     *
+     * @param StudentStoreRequest $request The request object containing the validated data.
+     *
+     * @return JsonResponse The response containing the student record that was stored.
+     *
+     * @throws Exception If an error occurs while storing the student record.
+     */
     public function store(StudentStoreRequest $request): JsonResponse
     {
         try {
@@ -54,18 +84,35 @@ class StudentController extends CrudControllerAbstract
         }
     }
 
+
+    /**
+     * Update an existing student record in the database.
+     *
+     * @param StudentUpdateRequest $request The request object containing the validated data.
+     * @param Student $student The student record to be updated.
+     *
+     * @return JsonResponse The response containing the updated student record.
+     *
+     * @throws Exception If an error occurs while updating the student record.
+     */
     public function update(StudentUpdateRequest $request, Student $student): JsonResponse
     {
         try {
-            $this->authorize('action-entity', $student);
             return $this->updateInstance($request->validated(), $student);
-        } catch (AuthorizationException $exception) {
-            return response()->json($exception, Response::HTTP_FORBIDDEN);
         } catch (Exception $exception) {
             return response()->json($exception, Response::HTTP_BAD_REQUEST);
         }
     }
 
+    /**
+     * Delete a student record from the database.
+     *
+     * @param Student $student The student object to be deleted.
+     *
+     * @return JsonResponse The response indicating success or failure of the deletion.
+     *
+     * @throws Exception If an error occurs while deleting the student record.
+     */
     public function destroy(Student $student): JsonResponse
     {
         try {
@@ -78,20 +125,18 @@ class StudentController extends CrudControllerAbstract
         }
     }
 
+    /**
+     * Authenticate a student and log them in.
+     *
+     * @param LoginRequest $request The request object containing the validated login data.
+     *
+     * @return JsonResponse The response containing the authenticated student details and access token.
+     *
+     * @throws Exception If an error occurs while authenticating the student.
+     */
     public function login(LoginRequest $request): JsonResponse
     {
         return $this->loginBy('student', $request->validated());
-    }
-
-    public function byTeacher(Teacher $teacher, StudentIndexRequest $request): JsonResponse
-    {
-        $students = Student::query()
-            ->whereHas('periods', fn($periods) => $periods->where('teacher_id', $teacher->id))
-            ->when($request->validated()['periodId'] ?? false, fn($students) => $students
-                ->whereHas('periods', fn($periods) => $periods->where('id', $request->validated()['periodId'])))
-            ->get();
-
-        return response()->json(StudentResource::collection($students));
     }
 
 }

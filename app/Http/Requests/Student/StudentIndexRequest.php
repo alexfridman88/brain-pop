@@ -14,7 +14,8 @@ class StudentIndexRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'periodId' => ['sometimes', 'integer'],
+            'period_id' => ['sometimes', 'numeric'],
+            'teacher_id' => ['sometimes', 'numeric'],
         ];
     }
 }

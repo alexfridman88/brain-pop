@@ -2,7 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\Period\PeriodRequest;
+use App\Http\Requests\Period\PeriodIndexRequest;
+use App\Http\Requests\Period\PeriodStoreRequest;
 use App\Http\Requests\StudentListRequest;
 use App\Http\Resources\PeriodResource;
 use App\Models\Period;
@@ -13,9 +14,14 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
-class PeriodController extends CrudControllerAbstract
+class PeriodController extends RepositoryAbstract
 {
 
+    /**
+     * Set the controller mapping.
+     *
+     * @return array The array containing the model class and resource class.
+     */
     protected function controllerMapping(): array
     {
         return [
@@ -24,35 +30,48 @@ class PeriodController extends CrudControllerAbstract
         ];
     }
 
-    public function index(): JsonResponse
+    /**
+     * Get all periods or filtered periods by params.
+     *
+     * @param PeriodIndexRequest $request The request object containing the teacher ID.
+     * @return JsonResponse The JSON response containing the list of filtered periods or the error message and status code.
+     */
+    public function index(PeriodIndexRequest $request): JsonResponse
     {
         try {
-            return $this->indexInstance();
+            $periods = Period::filterByTeacher($request->get('teacher_id'))->get();
+            return response()->json(PeriodResource::collection($periods));
         } catch (Exception $exception) {
             return response()->json($exception, Response::HTTP_BAD_REQUEST);
         }
     }
 
     /**
-     * Store a new period in the database.
-     * Only Teachers cant create a new period
+     * Store a new period.
+     * Only authorized 'teachers' can create a period.
+     *
+     * @param PeriodStoreRequest $request The request object containing the period data.
+     * @return JsonResponse The JSON response containing the stored period data or the error message and status code.
      */
-    public function store(PeriodRequest $request): JsonResponse
+    public function store(PeriodStoreRequest $request): JsonResponse
     {
         try {
-            $this->authorize('teacher');
-
             /** @var Teacher $teacher */
             $teacher = Auth::user();
             $period = $teacher->periods()->save(new Period($request->validated()));
             return response()->json($period, Response::HTTP_CREATED);
-        } catch (AuthorizationException $exception) {
-            return response()->json($exception, Response::HTTP_FORBIDDEN);
         } catch (Exception $exception) {
             return response()->json($exception, Response::HTTP_BAD_REQUEST);
         }
     }
 
+    /**
+     * Show the specified period.
+     *
+     * @param Period $period The period instance to be shown.
+     *
+     * @return JsonResponse The JSON response containing the period data.
+     */
     public function show(Period $period): JsonResponse
     {
         try {
@@ -63,22 +82,29 @@ class PeriodController extends CrudControllerAbstract
     }
 
     /**
-     * Only creator (teacher) can update period
+     * Update an existing period in the database.
+     * Only authorized users with the 'update-period' can update a period.
+     *
+     * @param PeriodStoreRequest $request The request object containing the validated data.
+     * @param Period $period The period instance to be updated.
+     * @return JsonResponse The JSON response indicating the success or failure of the update operation.
      */
-    public function update(PeriodRequest $request, Period $period): JsonResponse
+    public function update(PeriodStoreRequest $request, Period $period): JsonResponse
     {
         try {
-            $this->authorize('update-period', $period);
             return $this->updateInstance($request->validated(), $period);
-        } catch (AuthorizationException $exception) {
-            return response()->json($exception, Response::HTTP_FORBIDDEN);
         } catch (Exception $exception) {
             return response()->json($exception, Response::HTTP_BAD_REQUEST);
         }
     }
 
     /**
-     * Ony creator (teacher) can remove period
+     * Delete a period from the database.
+     * Only authorized users with the 'delete-period' permission can delete a period.
+     *
+     * @param Period $period The period to be deleted.
+     *
+     * @return JsonResponse The JSON response containing the result of the operation.
      */
     public function destroy(Period $period): JsonResponse
     {
@@ -92,11 +118,13 @@ class PeriodController extends CrudControllerAbstract
         }
     }
 
-    public function byTeacher(Teacher $teacher): JsonResponse
-    {
-        return response()->json(PeriodResource::collection($teacher->periods));
-    }
-
+    /**
+     * Attach students to a period.
+     *
+     * @param Period $period The period to attach students to
+     * @param StudentListRequest $request The request containing the student list
+     * @return JsonResponse The JSON response indicating success or failure
+     */
     public function attachStudents(Period $period, StudentListRequest $request): JsonResponse
     {
         try {
@@ -107,6 +135,13 @@ class PeriodController extends CrudControllerAbstract
         }
     }
 
+    /**
+     * Detach students from a period.
+     *
+     * @param Period $period The period from which to detach students.
+     * @param StudentListRequest $request The request containing the list of students to detach.
+     * @return JsonResponse The JSON response with a success message or an error message on failure.
+     */
     public function detachStudents(Period $period, StudentListRequest $request): JsonResponse
     {
         try {
