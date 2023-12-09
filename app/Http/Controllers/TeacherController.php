@@ -11,6 +11,7 @@ use App\Traits\LoginTrait;
 use Exception;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\JsonResponse;
+use Symfony\Component\HttpFoundation\Response;
 
 class TeacherController extends RepositoryAbstract
 {
@@ -38,7 +39,7 @@ class TeacherController extends RepositoryAbstract
     public function index(): JsonResponse
     {
         try {
-            return $this->indexInstance();
+            return $this->indexInstance()->responseJson($this->resource);
         } catch (Exception $exception) {
             return $this->responseError($exception);
         }
@@ -56,7 +57,7 @@ class TeacherController extends RepositoryAbstract
     public function store(TeacherStoreRequest $request): JsonResponse
     {
         try {
-            return $this->storeInstance($request->validated());
+            return $this->storeInstance($request->validated())->responseOk('success', Response::HTTP_CREATED);
         } catch (Exception $exception) {
             return $this->responseError($exception);
         }
@@ -74,7 +75,7 @@ class TeacherController extends RepositoryAbstract
     public function show(Teacher $teacher): JsonResponse
     {
         try {
-            return $this->showInstance($teacher);
+            return $this->showInstance($teacher)->responseJson($this->resource);
         } catch (Exception $exception) {
             return $this->responseError($exception);
         }
@@ -94,7 +95,7 @@ class TeacherController extends RepositoryAbstract
     public function update(TeacherUpdateRequest $request, Teacher $teacher): JsonResponse
     {
         try {
-            return $this->updateInstance($request->validated(), $teacher);
+            return $this->updateInstance($teacher, $request->validated())->responseOk();
         } catch (Exception $exception) {
             return $this->responseError($exception);
         }
@@ -114,7 +115,7 @@ class TeacherController extends RepositoryAbstract
     {
         try {
             $this->authorize('action-entity', $teacher);
-            return $this->destroyInstance($teacher);
+            return $this->destroyInstance($teacher)->responseOk();
         } catch (AuthorizationException $exception) {
             return $this->responseForbidden($exception);
         } catch (Exception $exception) {
@@ -133,7 +134,7 @@ class TeacherController extends RepositoryAbstract
      */
     public function login(LoginRequest $request): JsonResponse
     {
-        return $this->loginBy('teacher', $request->validated());
+        return $this->loginBy('teacher', $request->validated())->responseLogin();
     }
 
 }

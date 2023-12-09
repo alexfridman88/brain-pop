@@ -76,7 +76,7 @@ class PeriodController extends RepositoryAbstract
     public function show(Period $period): JsonResponse
     {
         try {
-            return $this->showInstance($period);
+            return $this->showInstance($period)->responseJson($this->resource);
         } catch (Exception $exception) {
             return $this->responseError($exception);
         }
@@ -94,7 +94,7 @@ class PeriodController extends RepositoryAbstract
     public function update(PeriodBaseRequest $request, Period $period): JsonResponse
     {
         try {
-            return $this->updateInstance($request->validated(), $period);
+            return $this->updateInstance($period, $request->validated())->responseOk();
         } catch (Exception $exception) {
             return $this->responseError($exception);
         }
@@ -113,7 +113,7 @@ class PeriodController extends RepositoryAbstract
     {
         try {
             $this->authorize('actions-period', $period);
-            return $this->destroyInstance($period);
+            return $this->destroyInstance($period)->responseOk();
         } catch (AuthorizationException $exception) {
             return $this->responseForbidden($exception);
         } catch (Exception $exception) {

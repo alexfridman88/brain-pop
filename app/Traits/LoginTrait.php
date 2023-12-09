@@ -13,24 +13,35 @@ use Symfony\Component\HttpFoundation\Response;
 trait LoginTrait
 {
 
+    private string $guardName;
+
     /**
-     * Authenticates a user by their entity type using the specified credentials.
+     * Logs in the user using the specified entity and credentials.
      *
-     * @param string $entity The entity type of the user (e.g. student, teacher).
-     * @param array $credentials The login credentials of the user.
-     * @return JsonResponse The JSON response containing the user's login details if successful, otherwise an error message.
+     * @param string $entity The entity to log in as.
+     * @param array $credentials The credentials for the login attempt.
+     *
+     * @return static The current instance of the class.
      */
-    private function loginBy(string $entity, array $credentials): JsonResponse
+    private function loginBy(string $entity, array $credentials): static
     {
+        $this->guardName = Str::plural($entity);
+        Auth::guard($this->guardName)->attempt($credentials);
+        return $this;
+    }
 
-        $guard = Str::plural($entity);
+    /**
+     * Generate the login response.
+     *
+     * @return JsonResponse
+     */
+    private function responseLogin(): JsonResponse
+    {
+        /** @var Student|Teacher $entity */
+        $entity = Auth::guard($this->guardName)->user();
 
-        if (Auth::guard($guard)->attempt($credentials)) {
-
-            /* @var Student|Teacher $entity */
-            $entity = Auth::guard($guard)->user();
+        if ($entity) {
             $entity->createToken('authToken');
-
             return response()->json(new LoginResource($entity), Response::HTTP_OK);
         }
 

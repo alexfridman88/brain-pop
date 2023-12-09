@@ -12,7 +12,6 @@ class ShowTest extends TestCase
 {
     private string $endPoint = 'api/periods';
 
-
     /**
      * Test the "show period as teacher" functionality.
      *
@@ -25,7 +24,7 @@ class ShowTest extends TestCase
 
         Sanctum::actingAs($teacher);
 
-        $this->getJson($this->endPoint .'/'. $period->id)
+        $this->getJson($this->endPoint . '/' . $period->id)
             ->assertOk();
     }
 
@@ -42,7 +41,12 @@ class ShowTest extends TestCase
 
         Sanctum::actingAs($student);
 
-        $this->getJson($this->endPoint .'/'. $period->id)
+        $this->getJson($this->endPoint . '/' . $period->id)
+            ->assertJson([
+                'id' => $period->id,
+                'name' => $period->name,
+                'teacher_id' => $period->teacher_id
+            ])
             ->assertOk();
     }
 
@@ -56,7 +60,7 @@ class ShowTest extends TestCase
         $teacher = Teacher::factory()->create();
         $period = Period::factory()->create(['teacher_id' => $teacher->id]);
 
-        $this->getJson($this->endPoint .'/'. $period->id)
+        $this->getJson($this->endPoint . '/' . $period->id)
             ->assertUnauthorized();
     }
 }

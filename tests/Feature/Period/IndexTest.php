@@ -4,6 +4,7 @@ namespace Tests\Feature\Period;
 
 use App\Models\Period;
 use App\Models\Teacher;
+use Illuminate\Testing\Fluent\AssertableJson;
 use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
 
@@ -41,6 +42,7 @@ class IndexTest extends TestCase
         Sanctum::actingAs($teacher);
 
         $this->json('GET', $this->endPoint, ['teacher_id' => $teacher->id])
+            ->assertJson(fn(AssertableJson $json) => $json->each(fn($prop) => $prop->hasAll('id', 'name', 'teacher_id')))
             ->assertOk();
     }
 

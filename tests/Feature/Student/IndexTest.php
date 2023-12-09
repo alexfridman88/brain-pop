@@ -5,6 +5,7 @@ namespace Tests\Feature\Student;
 use App\Models\Period;
 use App\Models\Student;
 use App\Models\Teacher;
+use Illuminate\Testing\Fluent\AssertableJson;
 use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
 
@@ -27,6 +28,7 @@ class IndexTest extends TestCase
         $period->students()->sync($students->pluck('id'));
 
         $this->getJson($this->endPoint)
+            ->assertJson(fn(AssertableJson $json) => $json->each(fn($prop) => $prop->hasAll('id', 'username', 'full_name', 'grade')))
             ->assertOk();
     }
 
@@ -46,6 +48,7 @@ class IndexTest extends TestCase
         $period->students()->sync($students->pluck('id'));
 
         $this->json('GET', $this->endPoint, ['teacher_id' => $teacher->id])
+            ->assertJson(fn(AssertableJson $json) => $json->each(fn($prop) => $prop->hasAll('id', 'username', 'full_name', 'grade')))
             ->assertOk();
     }
 
@@ -64,6 +67,7 @@ class IndexTest extends TestCase
         $period->students()->sync($students->pluck('id'));
 
         $this->json('GET', $this->endPoint, ['period_id' => $period->id])
+            ->assertJson(fn(AssertableJson $json) => $json->each(fn($prop) => $prop->hasAll('id', 'username', 'full_name', 'grade')))
             ->assertOk();
     }
 
@@ -77,7 +81,6 @@ class IndexTest extends TestCase
         $teacher = Teacher::factory()->create();
         Sanctum::actingAs($teacher);
         $period = Period::factory()->create(['teacher_id' => $teacher->id]);
-
         $students = Student::factory()->createMany(5);
         $period->students()->sync($students->pluck('id'));
 
@@ -85,6 +88,7 @@ class IndexTest extends TestCase
             'teacher_id' => $teacher->id,
             'period_id' => $period->id,
         ])
+            ->assertJson(fn(AssertableJson $json) => $json->each(fn($prop) => $prop->hasAll('id', 'username', 'full_name', 'grade')))
             ->assertOk();
     }
 

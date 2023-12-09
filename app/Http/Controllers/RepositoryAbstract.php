@@ -4,12 +4,17 @@ namespace App\Http\Controllers;
 
 use App\Interfaces\RepositoryInterface;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\JsonResource;
-use Symfony\Component\HttpFoundation\Response;
 
+/**
+ * Class RepositoryAbstract
+ *
+ * This abstract class is used as a base for concrete repository classes that implement the RepositoryInterface.
+ * It extends the Controller class and provides methods for handling CRUD operations on model instances.
+ */
 abstract class RepositoryAbstract extends Controller implements RepositoryInterface
 {
+    public JsonResource $resource;
 
     /**
      * Get the mapping between controllers and their corresponding methods.
@@ -27,7 +32,7 @@ abstract class RepositoryAbstract extends Controller implements RepositoryInterf
      *
      * @return string The model class name.
      */
-    private function getModel(): string
+    private function getMappedModel(): string
     {
         return $this->controllerMapping()['model'];
     }
@@ -37,75 +42,84 @@ abstract class RepositoryAbstract extends Controller implements RepositoryInterf
      *
      * @return string The resource associated with the controller.
      */
-    private function getResource(): string
+    private function getMappedResource(): string
     {
         return $this->controllerMapping()['resource'];
     }
 
     /**
-     * Retrieves and returns all instances of a model in JSON format.
+     * Get the index instance of the repository.
      *
-     * @return JsonResponse A JSON response containing the collection of model instances.
+     * This method returns the repository instance after performing indexing operations.
+     *
+     * @return RepositoryAbstract The index instance of the repository.
      */
-    public function indexInstance(): JsonResponse
+    public function indexInstance(): RepositoryAbstract
     {
         /** @var Model $model */
-        $model = $this->getModel();
+        $model = $this->getMappedModel();
 
         /** @var JsonResource $resource */
-        $resource = $this->getResource();
-        return $this->responseJson($resource::collection($model::query()->get()));
+        $resource = $this->getMappedResource();
+
+        $this->resource = $resource::collection($model::query()->get());
+        return $this;
     }
 
     /**
-     * Retrieves and returns a specific instance of a model in JSON format.
+     * Show an instance of a resource.
      *
-     * @param Model $model The model instance to be shown.
-     * @return JsonResponse A JSON response containing the model instance.
+     * This method creates a new instance of a resource using the provided model,
+     * and assigns it to the "resource" property of the current controller object.
+     *
+     * @param Model $model The model used to create the resource instance.
+     * @return RepositoryAbstract The current controller object.
      */
-    public function showInstance(Model $model): JsonResponse
+    public function showInstance(Model $model): RepositoryAbstract
     {
-        return $this->responseJson(new ($this->getResource())($model));
+        $this->resource = new ($this->getMappedResource())($model);
+        return $this;
     }
 
-
     /**
-     * Store an instance of a model with the given data.
+     * Stores an instance of the model in the database.
      *
-     * @param array $data The data to be stored for the model instance.
-     * @return JsonResponse The JSON response with the success message and HTTP status code.
+     * @param array $data The data to store.
+     *
+     * @return RepositoryAbstract The repository instance.
      */
-    public function storeInstance(array $data): JsonResponse
+    public function storeInstance(array $data): RepositoryAbstract
     {
-        $model = $this->getModel();
-        $item = new $model($data);
+        $item = new ($this->getMappedModel())($data);
         $item->save();
-        return $this->responseOk('success', Response::HTTP_CREATED);
+        return $this;
     }
 
     /**
-     * Update an instance of the model in the database.
+     * Updates an instance of the model in the database.
      *
-     * @param array $data The data to be updated in the instance.
-     * @param Model $model The instance of the model to be updated.
-     * @return JsonResponse The JSON response indicating the success of the update.
+     * @param array $data The updated data for the model.
+     * @param Model $model The model instance to be updated.
+     *
+     * @return RepositoryAbstract The repository instance.
      */
-    public function updateInstance(array $data, Model $model): JsonResponse
+    public function updateInstance(Model $model, array $data): RepositoryAbstract
     {
         $model->update($data);
-        return $this->responseOk();
+        return $this;
     }
 
     /**
-     * Delete an instance of the model from the database.
+     * Deletes an instance of the model from the database.
      *
-     * @param Model $model The model instance to be deleted.
-     * @return JsonResponse The JSON response indicating the success of the deletion.
+     * @param Model $model The model instance to delete.
+     *
+     * @return RepositoryAbstract The repository instance.
      */
-    public function destroyInstance(Model $model): JsonResponse
+    public function destroyInstance(Model $model): RepositoryAbstract
     {
         $model->delete();
-        return $this->responseOk();
+        return $this;
     }
 
 }

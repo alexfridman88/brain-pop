@@ -2,19 +2,19 @@
 
 namespace App\Interfaces;
 
+use App\Http\Controllers\RepositoryAbstract;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Http\JsonResponse;
 
 interface RepositoryInterface
 {
 
-    public function indexInstance(): JsonResponse;
+    public function indexInstance(): RepositoryAbstract;
 
-    public function showInstance(Model $model): JsonResponse;
+    public function showInstance(Model $model): RepositoryAbstract;
 
-    public function storeInstance(array $data): JsonResponse;
+    public function storeInstance(array $data): RepositoryAbstract;
 
-    public function updateInstance(array $data, Model $model): JsonResponse;
+    public function updateInstance(Model $model, array $data): RepositoryAbstract;
 
-    public function destroyInstance(Model $model): JsonResponse;
+    public function destroyInstance(Model $model): RepositoryAbstract;
 }

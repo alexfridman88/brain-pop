@@ -12,6 +12,7 @@ use App\Traits\LoginTrait;
 use Exception;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\JsonResponse;
+use Symfony\Component\HttpFoundation\Response;
 
 class StudentController extends RepositoryAbstract
 {
@@ -62,7 +63,7 @@ class StudentController extends RepositoryAbstract
     public function show(Student $student): JsonResponse
     {
         try {
-            return $this->showInstance($student);
+            return $this->showInstance($student)->responseJson($this->resource);
         } catch (Exception $exception) {
             return $this->responseError($exception);
         }
@@ -80,7 +81,7 @@ class StudentController extends RepositoryAbstract
     public function store(StudentStoreRequest $request): JsonResponse
     {
         try {
-            return $this->storeInstance($request->validated());
+            return $this->storeInstance($request->validated())->responseOk('success', Response::HTTP_CREATED);
         } catch (Exception $exception) {
             return $this->responseError($exception);
         }
@@ -100,7 +101,7 @@ class StudentController extends RepositoryAbstract
     public function update(StudentUpdateRequest $request, Student $student): JsonResponse
     {
         try {
-            return $this->updateInstance($request->validated(), $student);
+            return $this->updateInstance($student, $request->validated())->responseOk();
         } catch (Exception $exception) {
             return $this->responseError($exception);
         }
@@ -120,7 +121,7 @@ class StudentController extends RepositoryAbstract
     {
         try {
             $this->authorize('action-entity', $student);
-            return $this->destroyInstance($student);
+            return $this->destroyInstance($student)->responseOk();
         } catch (AuthorizationException $exception) {
             return $this->responseForbidden($exception);
         } catch (Exception $exception) {
@@ -139,7 +140,7 @@ class StudentController extends RepositoryAbstract
      */
     public function login(LoginRequest $request): JsonResponse
     {
-        return $this->loginBy('student', $request->validated());
+        return $this->loginBy('student', $request->validated())->responseLogin();
     }
 
 }

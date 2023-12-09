@@ -3,6 +3,7 @@
 namespace Teacher;
 
 use App\Models\Teacher;
+use Illuminate\Testing\Fluent\AssertableJson;
 use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
 
@@ -20,6 +21,7 @@ class IndexTest extends TestCase
         $teacher = Teacher::factory()->create();
         Sanctum::actingAs($teacher);
         $this->getJson($this->endPoint)
+            ->assertJson(fn(AssertableJson $json) => $json->each(fn($prop) => $prop->hasAll('id', 'full_name', 'username', 'email')))
             ->assertOk();
     }
 
