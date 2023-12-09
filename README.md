@@ -25,7 +25,7 @@
 ## Windows:
 
 * Go to the docker folder and run `.\build.bat` file on your computer.
-* Next, run `docker compose up -d` command for install docker containers.
+* Next, in same `docker` folder run `docker compose up -d` command for install docker containers.
 * After that, run `.\terminal.bat` to open the Docker command line (CLI).
 * Inside Docker, run `composer install` to get what the project needs.
 * Finally, run `php artisan migrate` in Docker CLI to set everything up.
@@ -40,5 +40,5 @@
 
 ### After install
 
-* Change in the `.env` file from line `DB_HOST=127.0.0.1` to `DB_HOST=mysql` line.
+* Change in the `.env` file line `DB_HOST=127.0.0.1` to `DB_HOST=mysql` line.
 * Make a new database for this project and add it to `.env` as `DB_DATABASE=brain_pop`.
