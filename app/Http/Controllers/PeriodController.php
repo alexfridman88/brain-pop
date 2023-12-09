@@ -131,7 +131,7 @@ class PeriodController extends RepositoryAbstract
     public function attachStudents(Period $period, StudentAttachmentRequest $request): JsonResponse
     {
         try {
-            $period->students()->sync(collect($request->validated())->pluck('id'));
+            $period->students()->syncWithoutDetaching(collect($request->validated())->pluck('id'));
             return $this->responseOk();
         } catch (Exception $exception) {
             return $this->responseError($exception);
