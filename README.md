@@ -217,7 +217,7 @@
 
     Status: 200
 
-## Teachers
+## Teachers Authenticated
 
 ### Get all teachers (index)
 
