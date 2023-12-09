@@ -7,6 +7,7 @@ use App\Http\Requests\Student\StudentIndexRequest;
 use App\Http\Requests\Student\StudentStoreRequest;
 use App\Http\Requests\Student\StudentUpdateRequest;
 use App\Http\Resources\StudentResource;
+use App\Models\Period;
 use App\Models\Student;
 use App\Traits\LoginTrait;
 use Exception;
@@ -49,7 +50,6 @@ class StudentController extends RepositoryAbstract
             return $this->responseError($exception);
         }
     }
-
 
     /**
      * Show the details of a student record.
@@ -121,6 +121,7 @@ class StudentController extends RepositoryAbstract
     {
         try {
             $this->authorize('action-entity', $student);
+            $student->periods()->detach();
             return $this->destroyInstance($student)->responseOk();
         } catch (AuthorizationException $exception) {
             return $this->responseForbidden($exception);

@@ -41,7 +41,6 @@ trait LoginTrait
         $entity = Auth::guard($this->guardName)->user();
 
         if ($entity) {
-            $entity->createToken('authToken');
             return response()->json(new LoginResource($entity), Response::HTTP_OK);
         }
 

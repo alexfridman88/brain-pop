@@ -5,6 +5,9 @@ use App\Http\Controllers\StudentController;
 use App\Http\Controllers\TeacherController;
 use Illuminate\Support\Facades\Route;
 
+//Route::post('health', function () {
+//    return response()->json(['status' => 'ok']);
+//});
 
 Route::post('students', [StudentController::class, 'store']);
 Route::post('teachers', [TeacherController::class, 'store']);

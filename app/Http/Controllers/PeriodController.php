@@ -21,6 +21,8 @@ class PeriodController extends RepositoryAbstract
      * Set the controller mapping.
      *
      * @return array The array containing the model class and resource class.
+     *
+     *
      */
     protected function controllerMapping(): array
     {
@@ -35,6 +37,15 @@ class PeriodController extends RepositoryAbstract
      *
      * @param PeriodIndexRequest $request The request object containing the teacher ID.
      * @return JsonResponse The JSON response containing the list of filtered periods or the error message and status code.
+     */
+
+    /**
+     * Get all periods or filtered periods by params.
+     * If the request contains a 'teacher_id' parameter,
+     * only periods associated with the teacher with the given 'id' are returned.
+     *
+     * @param PeriodIndexRequest $request
+     * @return JsonResponse
      */
     public function index(PeriodIndexRequest $request): JsonResponse
     {
