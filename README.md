@@ -25,7 +25,7 @@
 ## Windows:
 
 * Go to the docker folder and run `.\build.bat` file on your computer.
-* Next, in same `docker` folder run `docker compose up -d` command for install docker containers.
+* Next, in same `docker` folder, run `docker compose up -d` command for install docker containers.
 * After that, run `.\terminal.bat` to open the Docker command line (CLI).
 * Inside Docker, run `composer install` to get what the project needs.
 * Finally, run `php artisan migrate` in Docker CLI to set everything up.
@@ -33,7 +33,7 @@
 ## Mac:
 
 * Go to the docker folder and run `docker run --rm -it -v ${PWD}/../:/var/www/html montebal/laradev:php80-2204 -c "composer install"` command.
-* Next, run `docker compose up -d` command for install docker containers.
+* Next, in same `docker` folder, run `docker compose up -d` command for install docker containers.
 * After that, run `- docker exec -it pop_api bash` to open the Docker command line (CLI).
 * Inside Docker, run `composer install` to get what the project needs.
 * Finally, run `php artisan migrate` in Docker CLI to set everything up.
