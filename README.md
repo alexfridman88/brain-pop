@@ -70,7 +70,6 @@ https://github.com/alexfridman88/brain-pop
         "message": "string"
     }
 
-    Status: 201[.env.example](..%2F..%2FUsers%2Falexf%2FOneDrive%2F%3F%3F%3F%3F%3F%3F%3F%20%3F%3F%3F%3F%2Fbrain-pop-master%20%281%29%2Fbrain-pop-master%2F.env.example)
 
 ### Register a new teacher (store)
 
