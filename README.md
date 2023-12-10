@@ -193,7 +193,7 @@ https://github.com/alexfridman88/brain-pop
     Body Parameters:
     {
         "full_name": "string",
-        "email": "between:1,12"
+        "grage": "integer|between:1,12"
     }
 
     Response:
@@ -269,7 +269,7 @@ https://github.com/alexfridman88/brain-pop
     Body Parameters:
     {
         "full_name": "string",
-        "email": "between:1,12"
+        "email": "string"
     }
 
     Response:
@@ -396,7 +396,7 @@ https://github.com/alexfridman88/brain-pop
 
 ### Add a students to a period
 
-    Description: Only Teacher can add a namy students or Student can add itself to period
+    Description: Only Teacher can add a many students or Student can add itself to period
 
     POST /api/periods/{id}/attach
 
@@ -419,7 +419,7 @@ https://github.com/alexfridman88/brain-pop
 
 ### Remove a students from a period
     
-    Description: Only Teacher can remove a namy students or Student can remove itself from period
+    Description: Only Teacher can remove a many students or Student can remove itself from period
 
     POST /api/periods/{id}/detach
 
