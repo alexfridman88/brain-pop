@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Abstracts\RepositoryAbstract;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\Teacher\TeacherStoreRequest;
 use App\Http\Requests\Teacher\TeacherUpdateRequest;

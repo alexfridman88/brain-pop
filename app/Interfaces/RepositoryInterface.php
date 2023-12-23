@@ -2,7 +2,7 @@
 
 namespace App\Interfaces;
 
-use App\Http\Controllers\RepositoryAbstract;
+use App\Abstracts\RepositoryAbstract;
 use Illuminate\Database\Eloquent\Model;
 
 interface RepositoryInterface

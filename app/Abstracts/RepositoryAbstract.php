@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Abstracts;
 
+use App\Http\Controllers\Controller;
 use App\Interfaces\RepositoryInterface;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Resources\Json\JsonResource;

@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Abstracts\RepositoryAbstract;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\Student\StudentIndexRequest;
 use App\Http\Requests\Student\StudentStoreRequest;
 use App\Http\Requests\Student\StudentUpdateRequest;
 use App\Http\Resources\StudentResource;
-use App\Models\Period;
 use App\Models\Student;
 use App\Traits\LoginTrait;
 use Exception;
